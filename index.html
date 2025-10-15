@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EAGLE VIP SERVER</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    /* Custom Color Palette & Dark Mode Base */
+    :root {
+      --bg-dark: #1F2937; /* Dark Slate Gray */
+      --bg-card: #374151; /* Lighter Slate Gray */
+      --text-light: #F9FAFB;
+      --text-muted: #D1D5DB;
+      --accent-main: #1D4ED8; /* Blue 700 - Deep Blue */
+      --accent-hover: #1E40AF; /* Blue 800 */
+      --success: #059669; /* Emerald 600 */
+      --error: #EF4444; /* Red */
+      --pending: #F59E0B; /* Amber */
+      --violet-custom: #7C3AED; /* Violet 600 */
+      --telegram-blue: #0088CC;
+    }
+    
+    /* Base Body Styling */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* --- General UI Components --- */
+    .card-base {
+      background-color: var(--bg-card);
+      border-radius: 1rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      padding: 1.5rem;
+    }
+    
+    /* Font Styling for New Title */
+    .title-font {
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 2px;
+    }
+
+    /* --- Login Page Styles --- */
+    .login-container { max-width: 420px; width: 100%; }
+    .login-header {
+      font-size: 3rem; font-weight: 900; text-align: center;
+      background: linear-gradient(90deg, var(--accent-main), var(--violet-custom));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;
+    }
+    .login-message { color: var(--text-muted); margin-bottom: 2rem; font-weight: 300; text-align: center; }
+    .login-input {
+      background-color: #1F2937; border: 2px solid #4B5563; color: var(--text-light);
+      padding: 1.25rem; border-radius: 0.75rem; font-size: 1.2rem; text-align: center;
+      transition: border-color 0.3s;
+    }
+    .login-input:focus { border-color: var(--accent-main); outline: none; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.5); }
+    .login-button {
+      background: linear-gradient(90deg, var(--accent-main), var(--violet-custom));
+      color: var(--text-light); font-weight: 700; padding: 1.25rem; border-radius: 0.75rem;
+      font-size: 1.2rem;
+      transition: opacity 0.3s, transform 0.2s; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .login-button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    #login-error { color: var(--error); font-weight: 500; margin-top: -0.5rem; margin-bottom: 1.5rem; min-height: 1.25rem; }
+    .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-top: 4px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+    .loading-spinner { border: 4px solid rgba(255,255,255,0.15); border-top: 4px solid rgba(255,255,255,0.9); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* --- Analyzer UI Components --- */
+    .main-container { max-width: 768px; width: 100%; }
+    .analyzer-header { font-size: 2.5rem; font-weight: 900; }
+    
+    .info-box { 
+        border: 1px solid #4B5563; padding: 1rem; border-radius: 0.5rem; 
+        color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* Prediction Box (Simplified - No Copy button wrapper) */
+    .prediction-box {
+      background: linear-gradient(135deg, var(--violet-custom), var(--accent-main));
+      color: var(--text-light); padding: 1.5rem; border-radius: 1rem; font-size: 1.4rem;
+      font-weight: 700; text-align: center; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+      min-height: 6rem; display: flex; flex-direction: column; justify-content: center;
+      align-items: center;
+    }
+
+    /* Live Trends Moving Icon Animation */
+    .live-trend-icon {
+        display: inline-block;
+        animation: pulse-move 1.5s infinite;
+        margin-right: 0.5rem;
+        color: var(--success);
+    }
+    @keyframes pulse-move {
+        0% { opacity: 0.5; transform: translateX(0); }
+        50% { opacity: 1; transform: translateX(3px); }
+        100% { opacity: 0.5; transform: translateX(0); }
+    }
+    
+    /* Live Results Circles (Unchanged) */
+    .results-container { 
+        overflow-x: auto; 
+        padding: 0.5rem 0; 
+        margin-bottom: 1.5rem; 
+        gap: 1.5rem; 
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .results-container::-webkit-scrollbar { display: none; }
+    
+    .result-circle {
+      width: 65px; height: 65px; border-radius: 50%; color: var(--text-light);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.2); animation: zoomIn 0.5s ease-out forwards;
+    }
+    .result-circle .number { font-size: 1.4rem; font-weight: 700; }
+    .result-circle .size { font-size: 0.8rem; font-weight: 500; }
+    @keyframes zoomIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* Past History UI */
+    .past-results-container {
+      display: none;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 2px solid #4B5563;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+    }
+    .past-results-container.show { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.75rem;
+    }
+    .past-result-item {
+        background-color: #2D3748;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s;
+    }
+
+    /* Prediction Tracker Table Styles */
+    .history-container {
+        max-height: 300px; 
+        overflow-y: auto; 
+        border-radius: 1rem;
+        background-color: var(--bg-card);
+        padding: 0;
+    }
+    /* Custom Scrollbar */
+    .history-container::-webkit-scrollbar { width: 8px; }
+    .history-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 8px; }
+    .history-container::-webkit-scrollbar-track { background: var(--bg-card); }
+    
+    .history-container table { width: 100%; border-collapse: collapse; }
+    .history-container th { 
+        background-color: #4B5563; 
+        color: var(--text-light); 
+        font-weight: 700; 
+        position: sticky; top: 0; 
+        padding: 0.75rem 0.5rem;
+        z-index: 10;
+    }
+    .history-container td {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.95rem;
+      text-align: center;
+      border-bottom: 1px solid #4B5563;
+    }
+    .history-container tr:hover { background-color: #4B5563; transition: background-color 0.2s; }
+
+    /* Win/Loss/Pending Status Icons */
+    .status-icon { 
+        display: inline-flex; 
+        width: 28px; height: 28px; 
+        justify-content: center; align-items: center;
+        border-radius: 50%; 
+        font-size: 1.1rem; 
+        color: #FFFFFF; 
+        font-weight: 700; 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+    .status-icon.win { background-color: var(--success); }
+    .status-icon.loss { background-color: var(--error); }
+    .status-icon.pending { background-color: var(--pending); animation: pulse-pending 1.5s infinite; }
+    
+  </style>
+</head>
+<body>
+    <div id="loginPage" class="login-container card-base">
+        <div class="login-header title-font mb-8">EAGLE VIP SERVER</div>
+        
+        <p class="login-message">
+            Access Restricted. Enter your **Login Key** to use the Trend Analyzer.
+        </p>
+
+        <form id="loginForm">
+            <div class="space-y-4 mb-4">
+                <input type="password" id="loginKey" placeholder="Paste your secret key here..." class="login-input w-full" required />
+            </div>
+            
+            <div id="login-error" class="text-center"></div>
+            
+            <button type="submit" id="loginButton" class="login-button w-full">
+                <span id="loginButtonText" class="flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Enter Analyzer
+                </span>
+            </button>
+        </form>
+
+        <hr class="border-t border-gray-600 my-6">
+        
+        <a href="https://t.me/ERROR_2ND" target="_blank" class="w-full inline-flex items-center justify-center gap-2 font-semibold py-4 rounded-lg transition duration-200 shadow-xl" style="background-color: var(--telegram-blue); hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow-md">
+            <i class="fab fa-telegram-plane text-xl"></i> GET ACCESS
+        </a>
+    </div>
+
+    <div class="main-container" id="homePage" style="display: none;">
+      <div class="flex justify-center items-center mb-6">
+        <h1 class="analyzer-header title-font text-center">EAGLE VIP <span class="text-gray-400 font-light">SERVER</span></h1>
+      </div>
+      
+      <div id="keyStatusBox" class="info-box bg-gray-700 mb-6 border-green-500 border-2">
+            <i class="fas fa-key text-green-400"></i> <span id="keyStatusText" class="font-bold text-green-400">Key Status: Loading...</span>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div id="currentPeriod" class="info-box"><i class="fas fa-calendar-day text-accent-main"></i> Period: Loading...</div>
+        <div id="liveTime" class="info-box"><i class="fas fa-hourglass-half text-accent-main"></i> Time: --:--:--</div>
+        
+        <div id="keyExpiryBox" class="info-box bg-gray-800 border-violet-custom text-violet-custom">
+            <i class="fas fa-calendar-times"></i> Expiry: Loading...
+        </div>
+        
+        <div id="keyUsageBox" class="info-box col-span-full md:col-span-1"><i class="fas fa-bolt text-red-400"></i> Devices: Loading...</div>
+        
+      </div>
+      
+      <div id="predictionBox" class="prediction-box mb-6">
+        <div class="loading-spinner"></div>
+      </div>
+      
+      <h2 class="text-xl font-bold text-text-light mb-4">
+        <span class="live-trend-icon"><i class="fas fa-arrow-right"></i></span> Live Trends (Last 5)
+      </h2>
+      <div id="resultsContainer" class="results-container flex mb-6"></div>
+
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-text-light">Past Results History</h2>
+        <span class="text-sm font-medium text-text-muted" id="archivedCount">(Available: 0/100)</span>
+        <button id="pastResultsToggle" class="text-sm font-medium text-accent-main hover:text-accent-hover transition">
+            View Archived Results
+        </button>
+      </div>
+
+      <div id="pastResultsContainer" class="past-results-container mb-6">
+          <p class="text-center text-text-muted col-span-full py-4">Loading historical data...</p>
+      </div>
+
+      <h2 class="text-xl font-bold text-text-light mb-4 mt-6">Prediction Tracker (Recent)</h2>
+      <div class="history-container card-base p-0 overflow-hidden">
+        <table>
+          <thead id="tableHead">
+            <tr><th>Period</th><th>Predicted</th><th>Actual (No)</th><th>Status</th></tr>
+          </thead>
+          <tbody id="tableBody"><tr><td colspan="4" class="text-text-muted">Loading data...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+<script>
+  // =========================================================
+  // === 1. FIREBASE CONFIGURATION AND LOGIN LOGIC (SECURITY)===
+  // =========================================================
+  const FIREBASE_KEY = "userKey"; 
+
+  const firebaseConfig = {
+    apiKey: "AlzaSyBG1ZPt3VMGIKuGflHdRecSZHx5puY99Xs",
+    authDomain: "error-57ad4.firebaseapp.com",
+    databaseURL: "https://error-57ad4-default-rtdb.firebaseio.com",
+    projectId: "error-57ad4",
+    storageBucket: "error-57ad4.appspot.com",
+    messagingSenderId: "445412492654",
+    appId: "1:445412492654:android:2e75c3341086e4eb9a6d7f"
+  };
+
+  let db;
+  let currentLoginKey = null;
+  let currentKeyStatus = 'Loading...'; // Tracks the current status
+  let currentMaxDevices = 1; // Initialize with default, update on login
+
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+  }
+
+  let fetchInterval, timeInterval;
+  
+  // NOTE: This MUST be consistent across sessions and devices for the limit logic to work.
+  // Make device id Firebase-safe and deterministic
+  function getDeviceId() {
+    const browserInfo = navigator.userAgent + '|' + navigator.language + '|' + screen.width + 'x' + screen.height;
+    // base64 then remove characters that might interfere with Firebase path: . # $ [ ] / \
+    const raw = btoa(browserInfo || Math.random().toString()).replace(/=+$/,'');
+    // Keep only safe characters (alphanumeric + - _), slice to reasonable length
+    return raw.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 28);
+  }
+
+  function handleLogout(message = "Session expired or revoked. Please log in again.") {
+    localStorage.removeItem(FIREBASE_KEY);
+    currentLoginKey = null;
+    currentKeyStatus = 'Revoked';
+    const loginPage = document.getElementById("loginPage");
+    const homePage = document.getElementById("homePage");
+    const loginError = document.getElementById("login-error");
+
+    if (homePage && loginPage) {
+        // If they are on the home page, redirect them, otherwise just update the error
+        if (homePage.style.display !== 'none') {
+             homePage.style.display = 'none';
+             loginPage.style.display = 'block';
+        }
+    }
+    if (loginError) {
+        loginError.textContent = message;
+        loginError.style.color = 'var(--error)';
+    }
+    // Stop all recurring app activities
+    clearInterval(fetchInterval);
+    clearInterval(timeInterval);
+  }
+
+  function setLoading(isLoading) {
+    const loginButton = document.getElementById("loginButton");
+    const loginButtonText = document.getElementById("loginButtonText");
+    if (isLoading) {
+      loginButton.disabled = true;
+      loginButtonText.innerHTML = '<span class="spinner"></span> Validating...';
+    } else {
+      loginButton.disabled = false;
+      loginButtonText.innerHTML = '<i class="fas fa-sign-in-alt"></i> Enter Analyzer';
+    }
+  }
+
+  /**
+   * Updates the Key Status Box on the home page and updates the global status.
+   * @param {string} status 'Active', 'Expired', 'Revoked', or 'Limit Reached'
+   */
+  function updateKeyStatusUI(status) {
+    const box = document.getElementById("keyStatusBox");
+    const text = document.getElementById("keyStatusText");
+    const predictionBox = document.getElementById("predictionBox"); // For blocking prediction
+    const loginError = document.getElementById("login-error");
+
+    currentKeyStatus = status;
+
+    // --- Special handling for the LOGIN page error text style ---
+    if (loginError && status === 'Limit Reached') {
+        loginError.style.color = 'var(--pending)';
+    } else if (loginError && status === 'Expired') {
+        loginError.style.color = 'var(--error)';
+    }
+
+    if (!box || !text || !predictionBox) return;
+    
+    let color, icon;
+    
+    if (status === 'Expired' || status === 'Revoked' || status === 'Limit Reached') {
+        color = status === 'Limit Reached' ? 'var(--pending)' : 'var(--error)';
+        icon = status === 'Limit Reached' ? 'fas fa-shield-alt' : 'fas fa-times-circle';
+        
+        // --- Prediction Blocking Logic: Update box display ---
+        predictionBox.style.background = `linear-gradient(135deg, ${color}, #4B5563)`;
+        predictionBox.innerHTML = `
+            <div class="text-xl font-bold text-white mb-2">
+                ${status === 'Limit Reached' ? 'DEVICE LIMIT REACHED' : 'KEY ACCESS BLOCKED'}
+            </div>
+            <small class="mt-1 text-white opacity-90">
+                Status: ${status}. Please contact the owner for assistance.
+            </small>
+        `;
+    } else { // Active
+        color = 'var(--success)';
+        icon = 'fas fa-check-circle';
+        // Reset prediction box background for active status (content will be set by fetchData)
+        predictionBox.style.background = `linear-gradient(135deg, var(--violet-custom), var(--accent-main))`;
+        predictionBox.innerHTML = `<div class="loading-spinner"></div>`;
+    }
+    
+    box.style.borderColor = color;
+    text.style.color = color;
+    text.innerHTML = `<i class="${icon}"></i> <span class="font-bold">Key Status: ${status}</span>`;
+  }
+  
+  /**
+   * Updates the new information boxes (Device Usage and Expiry).
+   */
+  async function updateExtraInfo(key, expiresAt, maxDevices) {
+    const usageBox = document.getElementById("keyUsageBox");
+    const expiryBox = document.getElementById("keyExpiryBox");
+
+    if (expiryBox) {
+        const expiryDate = new Date(expiresAt);
+        const dateString = expiryDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const timeString = expiryDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        expiryBox.innerHTML = `<i class="fas fa-calendar-times text-violet-custom"></i> Expiry: ${dateString} <span class="text-sm">(${timeString})</span>`;
+    }
+
+    if (usageBox) {
+        try {
+            const activeDevicesRef = db.ref('active_devices/' + key);
+            const activeDevicesSnapshot = await activeDevicesRef.once('value');
+            const activeDevices = activeDevicesSnapshot.val() || {};
+            // Count entries (we treat them as persistent until admin removes)
+            const currentDeviceCount = Object.keys(activeDevices).length;
+
+            let color = 'text-green-400';
+            let message = `${currentDeviceCount} / ${maxDevices} used`;
+
+            if (currentDeviceCount >= maxDevices) {
+                color = 'text-red-400';
+                message = `Limit Reached (${currentDeviceCount}/${maxDevices})`;
+            } else if (currentDeviceCount > maxDevices * 0.8) {
+                color = 'text-yellow-400';
+            }
+
+            usageBox.innerHTML = `<i class="fas fa-bolt ${color}"></i> Devices: ${message}`;
+        } catch (e) {
+            console.error("Failed to fetch key usage:", e);
+            usageBox.innerHTML = `<i class="fas fa-bolt text-red-400"></i> Devices: Error`;
+        }
+    }
+  }
+
+  /**
+   * VALIDATE & LOGIN (atomic)
+   * Enforce the device limit using a Firebase transaction to avoid race conditions.
+   */
+  async function validateAndLogin(enteredKey) {
+    const loginError = document.getElementById("login-error");
+    const loginPage = document.getElementById("loginPage");
+    const homePage = document.getElementById("homePage");
+    const deviceId = getDeviceId();
+    
+    loginError.textContent = "";
+
+    if (!enteredKey || !db) {
+        loginError.textContent = "Please enter your key.";
+        return false;
+    }
+
+    setLoading(true);
+
+    try {
+        const userSnapshot = await db.ref('users/' + enteredKey).once('value');
+        const userData = userSnapshot.val();
+        const now = Date.now();
+
+        if (!userData) {
+            loginError.textContent = "Invalid Key. Access denied.";
+            return false;
+        }
+
+        if (now > userData.expiresAt) {
+            updateKeyStatusUI('Expired');
+            loginError.textContent = "Your key has expired. Please renew access.";
+            return false;
+        }
+        
+        // --- Store and use maxDevices ---
+        currentMaxDevices = userData.maxDevices || 1; 
+        
+        // --- Use a transaction to atomically check and add this device (avoid race) ---
+        const activeDevicesRef = db.ref('active_devices/' + enteredKey);
+        const transactionResult = await new Promise((resolve) => {
+            activeDevicesRef.transaction(current => {
+                current = current || {};
+                // If device already present, update its metadata and allow
+                if (current[deviceId]) {
+                    current[deviceId].lastSeen = now;
+                    return current;
+                }
+                // Count existing devices
+                const count = Object.keys(current).length;
+                if (count >= currentMaxDevices) {
+                    // Abort transaction by returning undefined (no change)
+                    return; // returning undefined cancels write
+                }
+                // Add this device entry
+                current[deviceId] = { addedAt: now, deviceId: deviceId };
+                return current;
+            }, function(error, committed, snapshot) {
+                resolve({ error, committed, snapshot: snapshot ? snapshot.val() : null });
+            });
+        });
+
+        if (transactionResult.error) {
+            console.error("Transaction error:", transactionResult.error);
+            loginError.textContent = "A connection error occurred. Try again.";
+            return false;
+        }
+
+        // If transaction didn't commit, that means limit reached and we didn't add this device
+        if (!transactionResult.committed) {
+            // Double-check if device exists (maybe it was already present)
+            const activeAfter = transactionResult.snapshot || {};
+            const isPresent = !!activeAfter[deviceId];
+            const currentCount = Object.keys(activeAfter).length;
+            if (!isPresent && currentCount >= currentMaxDevices) {
+                updateKeyStatusUI('Limit Reached');
+                loginError.textContent = `Device limit reached (${currentCount}/${currentMaxDevices}). Log out from other devices to continue.`;
+                return false;
+            }
+            // if not committed but device is present, allow (should be rare)
+        }
+
+        // If we reach here, the device is recorded (either pre-existing or just added)
+        // Log usage timeline (non-critical)
+        try {
+            await db.ref('key_usage/' + enteredKey).push({ timestamp: now, deviceId: deviceId });
+        } catch (e) {
+            console.warn("Failed to push key usage log:", e);
+        }
+
+        // Successful Login
+        localStorage.setItem(FIREBASE_KEY, enteredKey);
+        currentLoginKey = enteredKey; 
+        
+        loginPage.style.display = 'none';
+        homePage.style.display = 'block';
+        
+        // Set the status to Active and update info boxes
+        updateKeyStatusUI('Active'); 
+        updateExtraInfo(enteredKey, userData.expiresAt, currentMaxDevices); 
+
+        startApp();
+        return true;
+
+    } catch (error) {
+        console.error("Firebase Login Error:", error);
+        loginError.textContent = "A connection error occurred. Check your network.";
+        return false;
+    } finally {
+        setLoading(false);
+    }
+  }
+
+  async function setupLoginPage() {
+    const loginForm = document.getElementById("loginForm");
+    const loginKeyInput = document.getElementById("loginKey");
+
+    // --- Auto-Login Attempt ---
+    const storedKey = localStorage.getItem(FIREBASE_KEY);
+    if (storedKey) {
+        const loggedIn = await validateAndLogin(storedKey);
+        if (loggedIn) return;
+    }
+    
+    // --- Manual Login Logic (Triggered by form submit) ---
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Prevents the default form page reload
+            const enteredKey = loginKeyInput.value.trim();
+            await validateAndLogin(enteredKey);
+        });
+    }
+    
+    // Ensure login page is visible if auto-login failed
+    document.getElementById("loginPage").style.display = 'block';
+  }
+
+  // =========================================================
+  // === 2. TREND ANALYZER LOGIC (AFTER LOGIN) ================
+  // =========================================================
+
+  const CURRENT_API = 'https://api.bdg88zf.com/api/webapi/GetGameIssue';
+  const HISTORY_API = 'https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
+
+  const REQUEST_DATA = {
+    typeId: 1, language: 0,
+    random: "e7fe6c090da2495ab8290dac551ef1ed",
+    signature: "1F390E2B2D8A55D693E57FD905AE73A7",
+    timestamp: 1723726679
+  };
+
+  let predictionHistory = [];
+  let last100Results = [];
+  let lastHistoryHash = '';
+  
+  const BIG_NUMBERS = [5, 6, 7, 8, 9];
+  const SMALL_NUMBERS = [0, 1, 2, 3, 4];
+
+  function getBigSmall(num) { return num >= 5 ? "Big" : "Small"; }
+  function getColor(num) {
+    if ([1, 3, 7, 9].includes(num)) return { name: "Green", hex: "var(--success)" };
+    if ([2, 4, 6, 8].includes(num)) return { name: "Red", hex: "var(--error)" };
+    return { name: "Violet", hex: "var(--violet-custom)" };
+  }
+  
+  function getOppositeNumbers(size) {
+    const pool = size === "Big" ? SMALL_NUMBERS : BIG_NUMBERS;
+    let numbers = [];
+    while(numbers.length < 2) {
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      const number = pool[randomIndex];
+      if (!numbers.includes(number)) numbers.push(number);
+    }
+    return numbers;
+  }
+  
+  function updateLiveTime() {
+    const options = { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: '2-digit', second: '2-digit' };
+    const liveTimeEl = document.getElementById("liveTime");
+    if (liveTimeEl) liveTimeEl.innerHTML = `<i class="fas fa-hourglass-half text-accent-main"></i> Time: ${new Date().toLocaleTimeString('en-US', options)}`;
+  }
+  
+  function hashHistory(history) { 
+    // Only hash confirmed results for change detection
+    return history.filter(item => typeof item.number === 'number').map(item => item.period + item.number).join(','); 
+  }
+  
+  function getShortPeriod(period) { return period.toString().slice(-3); }
+  
+  function getPrediction(confirmedHistory) {
+    if (!confirmedHistory || confirmedHistory.length < 3) return { text: "Analyzing...", predictedSize: null, opposites: [] };
+    
+    const last3Sizes = confirmedHistory.slice(0, 3).map(item => getBigSmall(item.number));
+    const sizeCounts = {};
+    for (const size of last3Sizes) sizeCounts[size] = (sizeCounts[size] || 0) + 1;
+    let predictedSize = null;
+    let maxCount = 0;
+    for (const size in sizeCounts) {
+      if (sizeCounts[size] > maxCount) {
+        maxCount = sizeCounts[size];
+        predictedSize = size;
+      }
+    }
+    if (maxCount < 2) return { text: "Analyzing...", predictedSize: null, opposites: [] };
+    
+    const oppositeNumbers = getOppositeNumbers(predictedSize);
+    
+    const predictionText = `Prediction: <strong>${predictedSize}</strong> <br><small>(Opposites: ${oppositeNumbers.join(", ")})</small>`;
+    
+    return { text: predictionText, predictedSize: predictedSize, opposites: oppositeNumbers };
+  }
+
+  function renderResults(results) {
+    const container = document.getElementById("resultsContainer");
+    const archivedCountEl = document.getElementById("archivedCount");
+    
+    if (!container) return;
+    
+    // --- STABILITY FIX: Filter to only show CONFIRMED results ---
+    const confirmedResults = results.filter(item => typeof item.number === 'number');
+
+    // Update Archived Count (based on confirmed results)
+    if (archivedCountEl) archivedCountEl.textContent = `(Available: ${confirmedResults.length}/100)`;
+    
+    container.innerHTML = confirmedResults.slice(0, 5).map((item, index) => {
+      const color = getColor(item.number);
+      const sizeText = getBigSmall(item.number).charAt(0);
+      return `<div class="result-circle" style="background: ${color.hex}; animation-delay: ${index * 0.1}s;"><div class="number">${item.number}</div><div class="size">${sizeText}</div></div>`;
+    }).join("");
+  }
+
+  function renderPastResults(results) {
+    const container = document.getElementById("pastResultsContainer");
+    if (!container) return;
+
+    // --- STABILITY FIX: Filter to only show CONFIRMED results ---
+    const confirmedResults = results.filter(item => typeof item.number === 'number');
+    
+    container.innerHTML = confirmedResults.slice(0, 40).map(item => {
+      const color = getColor(item.number);
+      const size = getBigSmall(item.number);
+      const shortPeriod = getShortPeriod(item.period);
+      
+      const sizeBgColor = size === 'Big' ? 'bg-violet-custom' : 'bg-accent-main';
+      
+      return `
+        <div class="past-result-item">
+            <span class="past-result-period">#${shortPeriod}</span>
+            <span class="past-result-number" style="color: ${color.hex};">
+                ${item.number}
+            </span>
+            <span class="past-result-size ${sizeBgColor}">
+                ${size}
+            </span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderTable() {
+    const body = document.getElementById("tableBody");
+    if (!body) return;
+    
+    // Sort history to ensure the latest period is always at the top
+    const sortedHistory = [...predictionHistory].sort((a, b) => parseInt(b.period) - parseInt(a.period));
+
+    body.innerHTML = sortedHistory.slice(0, 10).map(item => {
+      let icon, statusClass;
+
+      if (item.status === "Win") {
+          icon = '✔';
+          statusClass = 'win';
+      } else if (item.status === "Loss") {
+          icon = '✖';
+          statusClass = 'loss';
+      } else {
+          icon = '⌛';
+          statusClass = 'pending';
+      }
+      
+      const shortPeriod = getShortPeriod(item.period);
+      const predColor = item.predictedSize === 'Big' ? 'text-violet-custom' : 'text-accent-main';
+      
+      return `
+        <tr>
+            <td>${shortPeriod}</td>
+            <td class="${predColor} font-bold">${item.predictedSize}</td>
+            <td>${item.actualNum !== "--" ? `${item.actual} (${item.actualNum})` : "--"}</td>
+            <td><span class="status-icon ${statusClass}">${icon}</span></td>
+        </tr>
+      `;
+    }).join("") || `<tr><td colspan='4' class="text-text-muted py-4">No predictions yet</td></tr>`;
+  }
+
+  async function fetchData() {
+    
+    // --- KEY STATUS CHECK & PREDICTION BLOCK ---
+    if (!currentLoginKey) {
+        handleLogout("Session interrupted. Please log in.");
+        return;
+    }
+    
+    // Fetch user data to check expiry and maxDevices
+    const userSnapshot = await db.ref('users/' + currentLoginKey).once('value');
+    const userData = userSnapshot.val();
+    
+    if (!userData || Date.now() > userData.expiresAt) {
+        const status = userData ? 'Expired' : 'Revoked';
+        updateKeyStatusUI(status);
+        handleLogout(`Your key is now ${status.toLowerCase()}. Please renew access.`);
+        return;
+    }
+
+    // Ensure currentMaxDevices is always the latest value
+    currentMaxDevices = userData.maxDevices || 1; 
+
+    // Re-check device limit status (UI-only). Do NOT force logout while running.
+    updateExtraInfo(currentLoginKey, userData.expiresAt, currentMaxDevices); 
+    updateKeyStatusUI('Active'); 
+    
+    try {
+      // Fetch current period (This logic only runs if status is 'Active')
+      const periodRes = await fetch(CURRENT_API, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...REQUEST_DATA, timestamp: Math.floor(Date.now() / 1000) })
+      });
+      const periodData = await periodRes.json();
+      const period = periodData?.data?.issueNumber || "Unavailable";
+      const currentPeriodEl = document.getElementById("currentPeriod");
+      if (currentPeriodEl) currentPeriodEl.innerHTML = `<i class="fas fa-calendar-day text-accent-main"></i> Period: ${getShortPeriod(period)}`;
+  
+      // Fetch history data
+      const res = await fetch(HISTORY_API + '?ts=' + Date.now());
+      const data = await res.json();
+      
+      if (!data?.data?.list) {
+        const predictionBox = document.getElementById("predictionBox");
+        if (predictionBox) predictionBox.innerHTML = "Error: Invalid or empty dataset.";
+        return;
+      }
+
+      // Map results, using null for unconfirmed numbers (the current period)
+      const newResults = data.data.list.slice(0, 100).map(item => {
+        const num = parseInt(item.number, 10);
+        return { period: item.issueNumber, number: isNaN(num) ? null : num };
+      });
+      
+      const confirmedResults = newResults.filter(item => typeof item.number === 'number');
+      const newHash = hashHistory(newResults);
+      last100Results = newResults;
+      
+      // 1. Prediction Logic (Current Period)
+      let currentPrediction = predictionHistory.find(p => p.period === period);
+      const predictionBox = document.getElementById("predictionBox");
+
+      if (predictionBox) {
+        if (currentPrediction) {
+          predictionBox.innerHTML = currentPrediction.prediction;
+        } else if (period !== "Unavailable") {
+          // New period, generate new prediction
+          const prediction = getPrediction(confirmedResults); // Use confirmed history for logic
+          predictionBox.innerHTML = prediction.text || "Prediction Error";
+          
+          if (prediction.predictedSize) {
+            // Remove any old pending prediction if period ID changed
+            predictionHistory = predictionHistory.filter(p => p.status !== 'Pending' || p.period === period);
+            
+            // Add new pending prediction
+            if (!predictionHistory.some(p => p.period === period)) {
+                predictionHistory.unshift({
+                  period, prediction: prediction.text, actual: "--", actualNum: "--", status: "Pending",
+                  predictedSize: prediction.predictedSize, opposites: prediction.opposites
+                });
+            }
+
+            if (predictionHistory.length > 20) predictionHistory.pop();
+          }
+        }
+      }
+
+      // 2. Result Update Logic (Check previous pending prediction)
+      let historyUpdated = false;
+      predictionHistory.forEach(ph => {
+        if (ph.status === "Pending") {
+          const match = last100Results.find(h => h.period === ph.period);
+          if (match && typeof match.number === 'number') { // Check if result is confirmed
+            ph.actual = getBigSmall(match.number);
+            ph.actualNum = match.number;
+            ph.status = ph.predictedSize === ph.actual || ph.opposites.includes(match.number) ? "Win" : "Loss";
+            historyUpdated = true;
+          }
+        }
+      });
+
+      // 3. UI Renders
+      renderResults(last100Results);
+      renderPastResults(last100Results);
+      if (historyUpdated || newHash !== lastHistoryHash) renderTable();
+      
+      lastHistoryHash = newHash;
+
+    } catch (e) {
+      const predictionBox = document.getElementById("predictionBox");
+      if (predictionBox) predictionBox.innerHTML = "Network Error";
+      console.error("Fetch error:", e.message);
+    }
+  }
+
+  function startApp() {
+    clearInterval(fetchInterval);
+    clearInterval(timeInterval);
+    
+    // Time update runs every second
+    timeInterval = setInterval(updateLiveTime, 1000);
+    // Data fetch runs every 3 seconds
+    fetchInterval = setInterval(fetchData, 3000);
+    
+    updateLiveTime();
+    fetchData();
+  }
+
+  // =========================================================
+  // === 3. INITIALIZATION & FEATURE LOGIC ===================
+  // =========================================================
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const pastResultsToggle = document.getElementById("pastResultsToggle");
+    const pastResultsContainer = document.getElementById("pastResultsContainer");
+
+    // --- Past Results Toggle Listener ---
+    if (pastResultsToggle) {
+        pastResultsToggle.addEventListener("click", () => {
+            if (pastResultsContainer.classList.contains("show")) {
+                pastResultsContainer.classList.remove("show");
+                pastResultsToggle.textContent = "View Archived Results";
+            } else {
+                pastResultsContainer.classList.add("show");
+                pastResultsToggle.textContent = "Hide Archived Results";
+            }
+        });
+    }
+    
+    // --- Start Login Process ---
+    if (typeof firebase !== 'undefined' && db) {
+        setupLoginPage();
+    } else {
+        document.getElementById("login-error").textContent = "Error: Failed to initialize Firebase connection.";
+        document.getElementById("loginButton").disabled = true;
+    }
+  });
+
+</script>
+</body>
+</html>
