@@ -242,34 +242,24 @@
         .app-content {
             flex-grow: 1;
             position: relative;
-            overflow: hidden;
-            /* Adjust padding/margin here if the nav buttons are inside and need to be separated from content */
+            overflow-y: auto; /* Enable scrolling for the single page content */
+            padding: 20px; /* Add padding here for the single page */
+            -webkit-overflow-scrolling: touch;
         }
         .page-section {
-            position: absolute;
-            top: 0;
-            left: 0;
+            /* Removed absolute positioning and transforms for a single-page flow */
             width: 100%;
-            height: 100%;
-            padding: 20px;
+            height: auto;
+            min-height: 100%;
+            padding: 0;
             box-sizing: border-box;
             background-color: transparent;
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            transform: translateX(100%);
             display: flex;
             flex-direction: column;
         }
-        .page-section.active { transform: translateX(0); }
-        #home.page-section { z-index: 2; }
-        #history.page-section { z-index: 1; }
-        #tools.page-section { z-index: 1; } /* UPDATED ID */
-        #contact.page-section { z-index: 1; }
-        .home-content, .history-content-wrapper, .tools-content, .contact-content { /* UPDATED CLASS */
-            flex-grow: 1;
-            padding: 15px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+        /* Removed all .page-section.active, transform styles */
+        
+        /* Removed all history/tools/contact content wrappers as they're not needed for a single page */
 
         /* --- START UI/UX MODIFICATION: New Home Layout & Timer Styling --- */
         .info-grid {
@@ -591,28 +581,13 @@
         /* --- END HISTORY CARD STYLES --- */
 
 
-        .nav-buttons { display: flex; justify-content: space-around; padding: 15px; background-color: var(--bg-transparent-light); border-top: 1px solid var(--border-light); }
-        /* UPDATED: Nav button styles to remove text */
-        .nav-buttons button {
-            background: transparent; color: var(--text-muted); padding: 12px 18px; border-radius: 10px;
-            border: none; font-size: 0; /* Hide text */
-            text-align: center; cursor: pointer; transition: all 0.3s ease;
-            display: flex; flex-direction: column; align-items: center;
-            font-weight: 700;
-        }
-        .nav-buttons button i { font-size: 26px; margin-bottom: 0; } /* Increased icon size and removed margin */
-        .nav-buttons button.active { color: var(--primary-color); background: rgba(0, 123, 255, 0.1); }
-        .nav-buttons button:hover { transform: translateY(-5px); color: var(--primary-color); }
+        /* Removed .nav-buttons and related styles */
 
         .history-scroll-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-right: 8px;
+            /* Now part of the main app-content scroll, but this is used for the inner history body */
+            overflow-y: hidden; 
+            padding-right: 0;
         }
-        .history-scroll-container::-webkit-scrollbar { width: 8px; }
-        .history-scroll-container::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
-        .history-scroll-container::-webkit-scrollbar-track { background-color: transparent; }
 
         .clear-btn { background: var(--loss-color); color: #ffffff; border: none; padding: 12px 20px; margin-top: 20px; border-radius: 10px; font-weight: 700; transition: background-color 0.3s ease; width: 100%; box-sizing: border-box; }
         .clear-btn:hover { background: #e35489; }
@@ -692,42 +667,7 @@
             100% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.6), 0 0 30px rgba(40, 167, 69, 0.4); }
         }
 
-        /* UPDATED: Features list to only show icons */
-        .tools-list { /* UPDATED CLASS */
-            list-style-type: none;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping */
-            gap: 12px;
-            justify-content: space-around;
-        }
-        .tools-list li { /* UPDATED CLASS */
-            background-color: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 20px;
-            width: 100px; /* Fixed width for icon-only cards */
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-        }
-        .tools-list li:hover { /* UPDATED CLASS */
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-        }
-        .tools-list li i { /* UPDATED CLASS */
-            font-size: 36px; /* Larger icon */
-            color: var(--primary-color);
-        }
-        .tools-list li .feature-text { /* UPDATED CLASS */
-            /* Text is hidden for icon-only mode, but kept for accessibility or future use */
-            display: none; 
-        }
+        /* All tool-related styles removed */
 
         .about-me-section {
             background-color: var(--bg-transparent-light);
@@ -750,96 +690,7 @@
             font-size: 0.9em;
         }
         
-        /* NEW STYLES FOR TOOLS SECTION */
-        .tool-card {
-            background-color: var(--bg-transparent-light);
-            border: 1px solid var(--border-light);
-            box-shadow: 0 6px 20px var(--shadow-color);
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-            display: flex; /* FIX: Enable flex for better layout of toggle */
-            flex-direction: column;
-            align-items: center;
-        }
-        .tool-card h3 {
-            font-size: 1.1em;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        .tool-status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1em;
-            font-weight: 700;
-        }
-        .tool-status-indicator i {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        .tool-status-indicator.working i {
-            color: var(--win-color);
-            animation: pulse-green 1.5s infinite;
-        }
-        .tool-status-indicator.offline i {
-            color: var(--loss-color);
-            animation: none;
-        }
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-        }
-        
-        /* FIX: Toggle switch styles */
-        .tool-toggle {
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .tool-toggle .switch {
-            position: relative;
-            display: inline-block;
-            width: 45px;
-            height: 25px;
-        }
-        .tool-toggle .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .tool-toggle .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--loss-color); /* OFF state */
-            transition: .4s;
-            border-radius: 25px;
-        }
-        .tool-toggle .slider:before {
-            position: absolute;
-            content: "";
-            height: 19px;
-            width: 19px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        .tool-toggle input:checked + .slider {
-            background-color: var(--win-color); /* ON state */
-        }
-        .tool-toggle input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-
+        /* All tool-card styles removed */
 
         #confetti-canvas {
             position: fixed;
@@ -853,7 +704,7 @@
 
         @media (max-width: 450px) {
             .main-container { width: 100vw; height: 100vh; max-width: 100%; }
-            .page-section { padding: 15px; }
+            .app-content { padding: 15px; } /* Mobile padding for content */
             .info-grid { 
                 grid-template-columns: 1fr 1fr;
                 gap: 12px; /* reduced gap */
@@ -864,8 +715,7 @@
             .info-card-value {
                 font-size: 1.6em;
             }
-            .history-content-wrapper { max-height: calc(100vh - 160px); }
-            .history-section { padding: 15px; }
+            /* Removed history-content-wrapper max-height */
             
             /* Prediction Card Mobile Adjustments */
             .prediction-category-container {
@@ -938,19 +788,6 @@
             <div class="header">
                 <div class="header-text">EAGLE VIP SERVER</div>
             </div>
-            <div class="nav-buttons">
-                <button id="home-btn" onclick="showPage('home')">
-                    <i class="fas fa-satellite-dish"></i>
-                </button>
-                <button id="history-btn" onclick="showPage('history')">
-                    <i class="fas fa-chart-line"></i>
-                </button>
-                <button id="tools-btn" onclick="showPage('tools')"> <i class="fas fa-screwdriver-wrench"></i>
-                </button>
-                <button id="contact-btn" onclick="showPage('contact')">
-                    <i class="fas fa-envelope"></i>
-                </button>
-            </div>
             <div class="app-content">
                 <div id="home" class="page-section active">
                     <div class="home-content">
@@ -980,90 +817,16 @@
                                 <li class="recent-result-item">LOADING...</li>
                             </ul>
                         </div>
-                    </div>
-                </div>
-                <div id="history" class="page-section">
-                    <div class="history-content-wrapper">
-                        <div class="history-section">
+                        
+                        <div class="history-section" style="margin-top: 25px;">
                             <div class="section-title">PREDICTION HISTORY</div>
                             <div id="historyBody" class="history-scroll-container"></div>
                             <button class="clear-btn" onclick="clearHistory()">
                                 <i class="fas fa-trash-alt"></i> CLEAR HISTORY
                             </button>
                         </div>
-                    </div>
-                </div>
-                <div id="tools" class="page-section"> 
-                    <div class="tools-content"> 
-                        <div class="info-card">
-                            <h2 class="section-title"><i class="fas fa-screwdriver-wrench"></i> REAL TIME WORKING TOOLS</h2>
-                            <div id="real-time-tools-list">
-                                <div class="tool-card" id="trend-analyzer-card">
-                                    <h3>TREND ANALYZER</h3>
-                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Analyzes current market data for pattern detection.</p>
-                                    <div class="tool-status-indicator working" id="trend-analyzer-status">
-                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
-                                    </div>
-                                    <div class="tool-toggle">
-                                        <label>REAL-TIME FEATURE:</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="trend-analyzer-toggle" checked onclick="toggleToolStatus('trend-analyzer')">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="tool-card" id="signal-confirmer-card">
-                                    <h3>SIGNAL CONFIRMER</h3>
-                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Validates prediction accuracy against recent results.</p>
-                                    <div class="tool-status-indicator working" id="signal-confirmer-status">
-                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
-                                    </div>
-                                    <div class="tool-toggle">
-                                        <label>REAL-TIME FEATURE:</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="signal-confirmer-toggle" checked onclick="toggleToolStatus('signal-confirmer')">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
 
-                                <div class="tool-card" id="reversal-algorithm-card">
-                                    <h3>REVERSAL ALGORITHM</h3>
-                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Provides an advanced counter-prediction for volatile markets.</p>
-                                    <div class="tool-status-indicator working" id="reversal-algorithm-status">
-                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
-                                    </div>
-                                    <div class="tool-toggle">
-                                        <label>REAL-TIME FEATURE:</label>
-                                        <label class="switch">
-                                            <input type="checkbox" id="reversal-algorithm-toggle" checked onclick="toggleToolStatus('reversal-algorithm')">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="tool-card">
-                                    <h3>RISK ASSESSOR</h3>
-                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Calculates predicted loss probability.</p>
-                                    <div class="tool-status-indicator working">
-                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
-                                    </div>
-                                </div>
-                                <div class="tool-card">
-                                    <h3>AUTO STRATEGY</h3>
-                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Suggests optimal betting sequence.</p>
-                                    <div class="tool-status-indicator working">
-                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="contact" class="page-section">
-                    <div class="contact-content">
-                        <div class="info-card">
+                        <div class="info-card" style="margin-top: 25px;">
                             <h2 class="section-title"><i class="fas fa-handshake"></i> GET IN TOUCH</h2>
                             <p style="text-align: left; font-weight: 400; font-size: 0.9em; color: var(--text-dark); text-transform: none;">
                                 For support, business inquiries, or to purchase a key, please contact us via Telegram.
@@ -1083,7 +846,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -1311,9 +1074,7 @@
         const predictionCard = document.getElementById('prediction-card');
         const historyBody = document.getElementById('historyBody');
         const homePage = document.getElementById('home');
-        const historyPage = document.getElementById('history');
-        const toolsPage = document.getElementById('tools'); // UPDATED VARIABLE
-        const contactPage = document.getElementById('contact');
+        
         // --- START UI/UX MODIFICATION: Timer Circle Elements ---
         const timerCircleProgress = document.getElementById('timerCircleProgress');
         const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 35; // 2 * pi * radius (35)
@@ -1342,93 +1103,20 @@
         let totalLosses = 0;
         let confetti = null;
 
-        // FIX: Tool status state (Adding new tools)
-        let trendAnalyzerEnabled = true;
-        let signalConfirmerEnabled = true;
-        let reversalAlgorithmEnabled = true;
-        
-        // --- FIX: Tool Toggle Functionality ---
-        function getToolStatus(toolId) {
-            if (toolId === 'trend-analyzer') return trendAnalyzerEnabled;
-            if (toolId === 'signal-confirmer') return signalConfirmerEnabled;
-            if (toolId === 'reversal-algorithm') return reversalAlgorithmEnabled;
-            return true; // Default for non-toggled tools (Risk Assessor, Auto Strategy)
-        }
-
-        function setToolStatus(toolId, isEnabled) {
-            if (toolId === 'trend-analyzer') trendAnalyzerEnabled = isEnabled;
-            if (toolId === 'signal-confirmer') signalConfirmerEnabled = isEnabled;
-            if (toolId === 'reversal-algorithm') reversalAlgorithmEnabled = isEnabled;
-        }
-        // --- END FIX ---
-
-
         document.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('confetti-canvas');
             if (canvas) {
                 confetti = new JSConfetti({ canvas });
             }
-            document.getElementById('home-btn').classList.add('active');
-            showPage('home');
             // Start live track updates
             fetchAndRenderLiveTrack();
             setInterval(fetchAndRenderLiveTrack, 5000); // Poll for new results every 5 seconds
             
             // Initial render for the prediction card (WAITING state)
             renderPredictionCard('WAITING', ['N/A', 'N/A']);
-
-            // FIX: Set initial state of the tool toggles
-            document.getElementById('trend-analyzer-toggle').checked = trendAnalyzerEnabled;
-            document.getElementById('signal-confirmer-toggle').checked = signalConfirmerEnabled;
-            document.getElementById('reversal-algorithm-toggle').checked = reversalAlgorithmEnabled;
         });
 
-        // FIX: Function to handle the tool's real-time feature
-        function toggleToolStatus(toolId) {
-            const toggle = document.getElementById(`${toolId}-toggle`);
-            const statusIndicator = document.getElementById(`${toolId}-status`);
-            const isEnabled = toggle.checked;
-
-            setToolStatus(toolId, isEnabled); // Update the state variable
-
-            if (isEnabled) {
-                statusIndicator.classList.remove('offline');
-                statusIndicator.classList.add('working');
-                statusIndicator.innerHTML = '<i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE';
-                showNotification('win', `${toolId.replace('-', ' ').toUpperCase()} ENABLED!`);
-            } else {
-                statusIndicator.classList.remove('working');
-                statusIndicator.classList.add('offline');
-                statusIndicator.innerHTML = '<i class="fas fa-times-circle"></i> STATUS: OFFLINE';
-                showNotification('loss', `${toolId.replace('-', ' ').toUpperCase()} DISABLED!`);
-            }
-        }
-        // END FIX
-
-        function showPage(id) {
-            const pages = document.querySelectorAll('.page-section');
-            const navButtons = document.querySelectorAll('.nav-buttons button');
-            pages.forEach(p => p.classList.remove('active'));
-            navButtons.forEach(btn => btn.classList.remove('active'));
-
-            homePage.style.transform = 'translateX(100%)';
-            historyPage.style.transform = 'translateX(100%)';
-            toolsPage.style.transform = 'translateX(100%)'; // UPDATED PAGE
-            contactPage.style.transform = 'translateX(100%)';
-
-            if (id === 'home') {
-                homePage.style.transform = 'translateX(0)';
-            } else if (id === 'history') {
-                historyPage.style.transform = 'translateX(0)';
-            } else if (id === 'tools') { // UPDATED ID
-                toolsPage.style.transform = 'translateX(0)'; // UPDATED PAGE
-            } else if (id === 'contact') {
-                contactPage.style.transform = 'translateX(0)';
-            }
-            
-            document.getElementById(id).classList.add('active');
-            document.getElementById(id + '-btn').classList.add('active');
-        }
+        // Removed showPage function and all related logic
 
         async function updatePeriodAndTimer() {
             const now = new Date();
@@ -1614,56 +1302,50 @@
             try {
                 const recent = await fetchLastResultsFromAPI();
                 
-                // --- START NEW PREDICTION LOGIC: Majority Vote of Last 3 Big/Small ---
+                // --- START UPDATED PREDICTION LOGIC: Majority Vote of Last 3 Big/Small with Triple Rule ---
                 if (recent.length >= 3) {
-                    const last3 = recent.slice(0, 3).map(r => {
+                    const last3Categories = recent.slice(0, 3).map(r => {
                         const num = parseInt(r.number, 10);
                         return bigNumbers.includes(num) ? 'BIG' : (smallNumbers.includes(num) ? 'SMALL' : 'N/A');
                     }).filter(s => s !== 'N/A');
 
-                    const counts = last3.reduce((acc, val) => {
-                        acc[val] = (acc[val] || 0) + 1;
-                        return acc;
-                    }, {});
+                    if (last3Categories.length >= 3) {
+                         const counts = last3Categories.reduce((acc, val) => {
+                            acc[val] = (acc[val] || 0) + 1;
+                            return acc;
+                        }, {});
 
-                    let determinedPrediction = 'WAITING';
-                    if (counts['BIG'] > counts['SMALL']) {
-                        determinedPrediction = 'BIG';
-                    } else if (counts['SMALL'] > counts['BIG']) {
-                        determinedPrediction = 'SMALL';
-                    } else if (counts['BIG'] === 1 && counts['SMALL'] === 1 && last3.length === 2) {
-                        // Special case for TIE (Big, Small) - predict the most recent
-                         determinedPrediction = last3[0];
-                    } else if (counts['BIG'] === 1 && counts['SMALL'] === 1 && last3.length === 3) {
-                        // Special case for TIE (Big, Small, Big) or (Small, Big, Small) - predict the most recent
-                         determinedPrediction = last3[0];
-                    }
-                    
-                    if (determinedPrediction !== 'WAITING') {
-                        let finalPrediction = determinedPrediction;
-                        
-                        // Apply Reversal Algorithm logic if enabled (simple mock: just reverse the prediction)
-                        if (reversalAlgorithmEnabled && Math.random() < 0.2) { // 20% chance to reverse
-                             finalPrediction = (determinedPrediction === 'BIG') ? 'SMALL' : 'BIG';
-                             showNotification('color-mode', 'REVERSAL ALGORITHM ACTIVE!');
+                        let determinedPrediction = 'WAITING';
+
+                        // 1. Check for Triple Same Rule (BIG, BIG, BIG or SMALL, SMALL, SMALL)
+                        if (counts['BIG'] === 3) {
+                            determinedPrediction = 'BIG'; // Triple BIG -> Predict BIG
+                        } else if (counts['SMALL'] === 3) {
+                            determinedPrediction = 'SMALL'; // Triple SMALL -> Predict SMALL
+                        } 
+                        // 2. Check for Simple Majority
+                        else if (counts['BIG'] > counts['SMALL']) {
+                            determinedPrediction = 'BIG';
+                        } else if (counts['SMALL'] > counts['BIG']) {
+                            determinedPrediction = 'SMALL';
+                        } 
+                        // 3. Tie-breaker (e.g., BIG, SMALL, BIG or SMALL, BIG, SMALL) - Predict the category of the most recent result (which is last3Categories[0])
+                        else if (counts['BIG'] === counts['SMALL']) {
+                             determinedPrediction = last3Categories[0];
                         }
 
-                        // Determine the Color for Number Prediction (Default to Red or Green)
-                        // This uses a simple alternating color strategy as the user didn't specify color logic.
-                        const lastResultColor = recent[0] ? numberColors[parseInt(recent[0].number, 10)] : 'red';
-                        let predictionColor = lastResultColor === 'red' ? 'green' : 'red';
+                        if (determinedPrediction !== 'WAITING') {
+                            predictionCategory = determinedPrediction;
+                            
+                            // Determine the Color for Number Prediction (Simple alternating strategy)
+                            const lastResultColor = recent[0] ? numberColors[parseInt(recent[0].number, 10)] : 'red';
+                            let predictionColor = lastResultColor === 'red' ? 'green' : 'red';
 
-                        predictionCategory = finalPrediction;
-                        // FIX: Only generate prediction if Trend Analyzer is enabled (Simulate feature working)
-                        if (trendAnalyzerEnabled) {
                             predictedNumbers = getNumbers(predictionColor, predictionCategory);
-                        } else {
-                            // If disabled, show no prediction for numbers
-                             predictedNumbers = ['N/A', 'N/A'];
                         }
                     }
                 }
-                // --- END NEW PREDICTION LOGIC ---
+                // --- END UPDATED PREDICTION LOGIC ---
 
                 
                 // Update the card with the actual prediction
@@ -1693,7 +1375,7 @@
             }
         }
 
-        // --- FIX: Check Pending Result Function ---
+        // --- Check Pending Result Function (No Change) ---
         async function checkPendingResult(period) {
             // Find the pending entry in history
             const entryIndex = history.findIndex(entry => entry.period === period && entry.status === 'PENDING');
@@ -1758,10 +1440,10 @@
                 }
             }
         }
-        // --- END FIX ---
+        // --- End Check Pending Result Function ---
 
 
-        // RENDER HISTORY FUNCTION (FIXED)
+        // RENDER HISTORY FUNCTION (NO CHANGE)
         function renderHistory() {
             if (!historyBody) return;
             
