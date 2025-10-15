@@ -3,696 +3,644 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>✪ 𝗘𝗔𝗚𝗟𝗘 𝗠𝗔𝗙𝗜𝗔 ✪</title>
+    <title>EAGLE VIP SERVER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <style>
         :root {
-            /* Base variables (DEFAULT THEME ONLY) */
-            --bg-light: #F8F9FA;
-            --bg-transparent-light: rgba(248, 249, 250, 0.9);
-            --border-light: #A3E4D7;
-            --primary-color: #20C997;
-            --highlight-color: #2D3748;
-            --accent-color: #A3E4D7;
-            --secondary-accent: #FFD700;
-            --shadow-color: rgba(32, 201, 151, 0.3);
+            --bg-light: #F0F2F5;
+            --bg-transparent-light: rgba(255, 255, 255, 0.9);
+            --border-light: rgba(0, 0, 0, 0.1);
+            --primary-color: #007BFF;
+            --accent-color: #6F42C1;
+            --text-dark: #333333;
+            --text-muted: #6C757D;
+            --shadow-color: rgba(0, 0, 0, 0.1);
             --win-color: #28A745;
             --loss-color: #DC3545;
             --pending-color: #FFC107;
             --win-jk-color: #6610F2;
+            
+            /* New prediction colors */
+            --big-color: #FF5733; /* Orange-Red for Big */
+            --small-color: #3399FF; /* Blue for Small */
+            --big-shadow: rgba(255, 87, 51, 0.5);
+            --small-shadow: rgba(51, 153, 255, 0.5);
+            --green-num: var(--win-color);
+            --red-num: var(--loss-color);
+            
+            /* FIX: New header colors for the title box */
+            --header-gradient: linear-gradient(90deg, #FF6F61, #FFD166, #32CD32, #1E90FF, #6F42C1);
+            --header-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-
-        /* --- REMOVED UPDATED THEMES --- */
 
         body {
-            font-family: 'El Messiri', sans-serif;
+            /* CHANGED FONT-FAMILY TO JOSEFIN SANS */
+            font-family: 'Josefin Sans', sans-serif;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--bg-light), #E9ECEF);
-            color: var(--highlight-color);
-            overflow-x: hidden;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow: hidden;
+            position: relative;
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 700;
         }
 
-        * {
-            text-transform: uppercase;
-            font-weight: 500;
-            color: var(--highlight-color);
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Background Animation (Cosmic Wave Only) */
+        .star-fragment {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.9);
+            animation: fallStar 6s ease-in-out infinite;
+            -webkit-animation: fallStar 6s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes fallStar {
+            0% {
+                transform: translateY(-100vh);
+                -webkit-transform: translateY(-100vh);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                -webkit-transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
         .cosmic-wave {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: linear-gradient(
                 45deg,
-                rgba(32, 201, 151, 0.2),
-                rgba(255, 215, 0, 0.2),
-                rgba(248, 249, 250, 0.2),
-                rgba(32, 201, 151, 0.2)
+                rgba(0, 123, 255, 0.2),
+                rgba(111, 66, 193, 0.2),
+                rgba(255, 105, 180, 0.2),
+                rgba(0, 123, 255, 0.2)
             );
             background-size: 400%;
             opacity: 0.3;
             animation: waveFlow 10s linear infinite;
-            z-index: -1;
+            -webkit-animation: waveFlow 10s linear infinite;
+            z-index: -2;
         }
 
         @keyframes waveFlow {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 400% 400%; }
-            100% { background-position: 0% 0%; }
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 400% 400%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
         }
 
         .hidden { display: none !important; }
 
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--bg-transparent-light);
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 6px 12px var(--shadow-color);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            width: 90%;
-            max-width: 400px;
-            border: 2px solid var(--border-light);
-        }
-
-        .modal.active { display: block; }
-
-        /* Cards */
-        .card {
-            background: #FFFFFF;
-            border-radius: 1.5rem;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(8px);
-            margin: 0.75rem 0;
-            padding: 1.5rem;
-        }
-
-        .gradient-bg {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-accent));
-        }
-
-        /* Header */
-        header {
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        svg text {
-            text-anchor: middle;
-            dominant-baseline: middle;
-            text-transform: uppercase;
-            animation: stroke 5s infinite alternate;
-            stroke-width: 1.2;
-            stroke: var(--primary-color);
-            font-size: 80px;
-            fill: var(--highlight-color);
-        }
-
-        @media (max-width: 768px) {
-            svg text { font-size: 60px; }
-        }
-
-        @keyframes stroke {
-            0% { fill: rgba(248, 249, 250, 0); stroke: var(--primary-color); stroke-dashoffset: 25%; stroke-dasharray: 0 50%; stroke-width: 1.2; }
-            70% { fill: rgba(248, 249, 250, 0); stroke: var(--secondary-accent); }
-            80% { fill: rgba(248, 249, 250, 0); stroke: var(--bg-light); stroke-width: 2.5; }
-            100% { fill: var(--highlight-color); stroke: rgba(32, 201, 151, 0); stroke-dashoffset: -25%; stroke-dasharray: 50% 0; stroke-width: 0; }
-        }
-
-        /* Prediction Section */
-        .prediction-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .prediction-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 8px 20px var(--shadow-color);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        .prediction-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, var(--secondary-accent) 0%, transparent 70%);
-            opacity: 0.1;
-            z-index: -1;
-        }
-
-        .prediction-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .prediction-item {
-            background: #FFFFFF;
-            border-radius: 1rem;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .prediction-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px var(--shadow-color);
-        }
-
-        .prediction-item i {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .prediction-item h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .prediction-item p {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .confidence-circle {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 1rem auto;
-        }
-
-        .confidence-circle svg {
-            transform: rotate(-90deg);
-        }
-
-        .confidence-circle circle {
-            fill: none;
-            stroke-width: 10;
-        }
-
-        .confidence-circle .circle-bg {
-            stroke: #E9ECEF;
-        }
-
-        .confidence-circle .circle-fill {
-            stroke: var(--primary-color);
-            stroke-dasharray: 314;
-            stroke-dashoffset: 314;
-            transition: stroke-dashoffset 0.5s ease;
-        }
-
-        .confidence-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--highlight-color);
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Login Container */
-        .login-container {
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            box-sizing: border-box;
-            z-index: 10;
-        }
-        
-        .login-content {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .login-box {
-            background: var(--bg-transparent-light);
-            border-radius: 1.5rem;
-            border: 2px solid var(--border-light);
-            box-shadow: 0 6px 12px var(--shadow-color);
-            backdrop-filter: blur(8px);
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .title {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .subtitle {
-            font-size: 1em;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2em;
-        }
-
-        input[type="password"] {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3.5rem;
-            border: 2px solid var(--border-light);
-            border-radius: 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        input[type="password"]:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 10px var(--shadow-color);
-            background: rgba(255, 255, 255, 0.9);
-        }
-
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            border: none;
-            border-radius: 1rem;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--primary-color);
-            color: var(--highlight-color);
-        }
-
-        .btn-login:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 12px var(--shadow-color);
-        }
-
-        .divider {
-            margin: 1.5rem 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            flex-grow: 1;
-            height: 1px;
-            background-color: var(--border-light);
-        }
-
-        .divider span {
-            padding: 0 1rem;
-        }
-
-        .footer-text {
-            font-size: 0.85em;
-            margin-top: 1.5rem;
-        }
-
-        .login-message {
-            margin-top: 1rem;
-            font-size: 0.9em;
-            color: var(--loss-color);
-        }
-        
-        /* New DM Button Style */
-        .btn-telegram {
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #ffffff;
-            background: #0088cc;
-            border-radius: 1rem;
-            width: 100%; /* Make it match the input width */
-            padding: 0.75rem 1rem;
-            font-size: 0.95em; /* Slightly smaller font */
-            transition: all 0.3s ease;
-            box-sizing: border-box; /* Ensures padding is included in the width */
-        }
-        
-        .btn-telegram:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 12px rgba(0, 136, 204, 0.5);
-            background: #006699;
-        }
-        
-        .btn-telegram i {
-            font-size: 1.2em;
-            margin-right: 0.75rem;
-            color: #ffffff;
-        }
-
-        /* Main Container */
-        .main-container {
-            width: 100%;
-            max-width: 450px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: 100px;
-            box-sizing: border-box;
-        }
-
-        .app-content {
-            flex-grow: 1;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .content-section {
-            display: none;
-            flex-direction: column;
-            width: 100%;
-            padding: 1rem;
-            box-sizing: border-box;
-            background: transparent;
-            min-height: 100%;
-        }
-
-        .content-section.active {
-            display: flex;
-        }
-
-        .home-content, .history-content-wrapper, .features-content, .contact-content {
-            flex-grow: 1;
-            padding: 0.5rem;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Dashboard Cards */
-        .dashboard-card {
-            background: #FFFFFF;
-            border-radius: 1.5rem;
-            padding: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(8px);
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
-            background: #F4F4F9;
-            border-radius: 1rem;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-        .stat-item h3 {
-            font-size: 0.8em;
-            color: var(--primary-color);
-            margin: 0;
-            letter-spacing: 1px;
-        }
-        .stat-item p {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin: 0.2em 0 0;
-            color: var(--highlight-color);
-        }
-
-        /* History Items */
-        .history-item {
-            background: #FFFFFF;
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(8px);
-            border-left: 4px solid;
-            margin-bottom: 0.75rem;
-        }
-
-        .history-item.win {
-            border-left-color: var(--win-color);
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.08), #FFFFFF);
-        }
-
-        .history-item.loss {
-            border-left-color: var(--loss-color);
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.08), #FFFFFF);
-        }
-
-        .history-item.pending {
-            border-left-color: var(--pending-color);
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), #FFFFFF);
-        }
-
-        .history-scroll-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-right: 0.5rem;
-        }
-
-        .history-scroll-container::-webkit-scrollbar { width: 8px; }
-        .history-scroll-container::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
-        .history-scroll-container::-webkit-scrollbar-track { background-color: transparent; }
-
-        .clear-btn {
-            background: var(--loss-color);
-            color: #ffffff;
-            border: none;
-            padding: 0.8rem 1.2rem;
-            margin-top: 1rem;
-            border-radius: 1rem;
-            transition: background-color 0.3s ease;
-        }
-
-        .clear-btn:hover { background: #c82333; }
-
-        /* Recent Results Section */
-        .recent-results-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            text-align: center;
-        }
-        .result-item {
-            padding: 0.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        .result-item-number {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin: 0.2rem 0;
-        }
-        .result-item.red {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--loss-color);
-        }
-        .result-item.green {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--win-color);
-        }
-        .result-item.violet {
-            background-color: rgba(102, 16, 242, 0.1);
-            color: var(--win-jk-color);
-        }
-        .result-item-number.red-text { color: var(--loss-color); }
-        .result-item-number.green-text { color: var(--win-color); }
-        .result-item-number.violet-text { color: var(--win-jk-color); }
-        /* Navigation */
-        .navigation {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 420px;
-            width: 90%;
-            height: 70px;
-            background: var(--bg-transparent-light);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 1.5rem;
-            box-shadow: 0 6px 12px var(--shadow-color);
-            z-index: 1000;
-        }
-
-        .navigation ul {
-            display: flex;
-            width: 100%;
-            justify-content: space-around;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navigation ul li {
-            position: relative;
-            list-style: none;
-            flex-grow: 1;
-            text-align: center;
-            height: 70px;
-            z-index: 1;
-        }
-
-        .navigation ul li a {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .navigation ul li a .icon {
-            position: relative;
-            display: block;
-            line-height: 75px;
-            font-size: 1.5em;
-            text-align: center;
-            transition: 0.5s;
-            color: var(--highlight-color);
-        }
-
-        .navigation ul li.active a .icon {
-            transform: translateY(-32px);
-            color: var(--primary-color);
-        }
-
-        .navigation ul li a .text {
-            position: absolute;
-            font-weight: 400;
-            font-size: 0.75em;
-            letter-spacing: 0.05em;
-            transition: 0.5s;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .navigation ul li.active a .text {
-            opacity: 1;
-            transform: translateY(10px);
-        }
-
-        .indicator {
-            position: absolute;
-            top: -50%;
-            width: 70px;
-            height: 70px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            border: 6px solid var(--bg-light);
-            transition: 0.5s;
-        }
-
-        .indicator::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: -22px;
-            width: 20px;
-            height: 20px;
-            background: transparent;
-            border-top-right-radius: 20px;
-            box-shadow: 1px -10px 0 0 var(--bg-light);
-        }
-
-        .indicator::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -22px;
-            width: 20px;
-            height: 20px;
-            background: transparent;
-            border-top-left-radius: 20px;
-            box-shadow: -1px -10px 0 0 var(--bg-light);
-        }
-
-        /* Overlays */
         .maintenance-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-transparent-light);
+            background: rgba(0, 0, 0, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             flex-direction: column;
-            font-size: 1.5rem;
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+        .maintenance-overlay span { font-size: 3rem; margin-bottom: 20px; color: var(--primary-color); }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
+            animation: fadeInScaleUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes fadeInScaleUp {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .login-box {
+            background: var(--bg-transparent-light);
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 40px;
+            text-align: center;
+        }
+        .title { font-size: 2.5em; color: var(--primary-color); font-weight: 700; text-shadow: 0 0 10px rgba(0, 123, 255, 0.2); }
+        .subtitle { font-size: 1em; color: var(--text-muted); margin-bottom: 30px; font-weight: 700; }
+        .input-group { margin-bottom: 25px; position: relative; }
+        .input-group i {
+            position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+        input[type="password"] {
+            width: 100%; padding: 18px 20px 18px 60px; border: 2px solid var(--border-light); border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6); color: var(--text-dark); font-size: 1.1em; box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+        input[type="password"]:focus {
+            border-color: var(--primary-color); outline: none; box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .btn {
+            display: block; width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-decoration: none; color: #ffffff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-login { background: linear-gradient(45deg, var(--primary-color), var(--accent-color)); }
+        .btn-login:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 25px rgba(0, 123, 255, 0.2); }
+        .btn-telegram {
+            display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+            background: linear-gradient(45deg, #0088cc, #0077b3); color: #ffffff; padding: 14px 28px; font-size: 1em;
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.1); margin-top: 25px; border-radius: 12px;
+            width: auto;
+        }
+        .btn-telegram:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0, 136, 204, 0.2); }
+        .divider { margin: 30px 0; display: flex; align-items: center; color: var(--text-muted); font-weight: 700; }
+        .divider::before, .divider::after { content: ''; flex-grow: 1; height: 1px; background-color: var(--border-light); }
+        .divider span { padding: 0 16px; }
+        .footer-text { font-size: 0.85em; color: var(--text-muted); margin-top: 30px; font-weight: 700; }
+        .login-message { margin-top: 15px; font-size: 0.95em; color: var(--loss-color); font-weight: 700; }
+
+        .header {
+            /* FIX: Apply new header colors/styles */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-align: center;
+            padding: 22px 0;
+            background: var(--header-gradient); /* FIX: Apply gradient for different colors */
+            color: #ffffff; /* Text color for the gradient background */
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: var(--header-shadow); /* FIX: Stronger shadow */
+        }
+        .header-text { 
+            font-size: 28px; 
+            font-weight: 900; /* Extra bold for visibility */
+            /* FIX: Subtle text shadow for suitable text */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); 
+            letter-spacing: 1px;
         }
 
-        .maintenance-overlay span {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+        .main-container {
+            width: 100vw;
+            max-width: 450px;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: transparent;
+            box-shadow: none;
+            z-index: 2;
+        }
+        .app-content {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            /* Adjust padding/margin here if the nav buttons are inside and need to be separated from content */
+        }
+        .page-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: transparent;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform: translateX(100%);
+            display: flex;
+            flex-direction: column;
+        }
+        .page-section.active { transform: translateX(0); }
+        #home.page-section { z-index: 2; }
+        #history.page-section { z-index: 1; }
+        #tools.page-section { z-index: 1; } /* UPDATED ID */
+        #contact.page-section { z-index: 1; }
+        .home-content, .history-content-wrapper, .tools-content, .contact-content { /* UPDATED CLASS */
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- START UI/UX MODIFICATION: New Home Layout & Timer Styling --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+        /* New styling for the prominent prediction card */
+        .prediction-card-wrapper {
+            margin-bottom: 25px;
+        }
+        /* MODIFIED: Changed ID to class for cleaner styling and removed inner info-card styling from here */
+        .prediction-box {
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--bg-transparent-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            border-radius: 16px;
+            /* Added padding here to separate content from the card edges */
+            padding-bottom: 15px;
+        }
+        
+        .info-card {
+            background-color: var(--bg-transparent-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            animation: fadeIn 0.8s ease-out;
+            transition: transform 0.3s ease;
+            position: relative;
+            display: flex; /* For info cards */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .info-card:hover { transform: translateY(-5px); }
+        .info-card-title {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        /* TIMER CIRCLE STYLES */
+        .timer-circle-container {
+            position: relative;
+            width: 80px; /* Reduced size for better fit in grid */
+            height: 80px;
+        }
+        .timer-circle-svg {
+            transform: rotate(-90deg);
+        }
+        .timer-circle-track {
+            stroke: var(--border-light);
+            fill: none;
+            stroke-width: 5;
+        }
+        .timer-circle-progress {
+            stroke: var(--primary-color);
+            fill: none;
+            stroke-width: 5;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        .timer-circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.4em; /* Font size for the time */
+            font-weight: 700;
             color: var(--primary-color);
         }
+
+        /* Prediction Card Styling (Fixed and enhanced look) */
+        .prediction-box .info-card-title {
+            margin-top: 15px; /* Added separation from top edge */
+            margin-bottom: 15px;
+            font-size: 1.1em; /* Increased size for main title */
+            color: var(--primary-color); /* Emphasize main title */
+        }
+
+        .prediction-category-container {
+            /* ADJUSTED SIZE: reduced font size and padding, and removed bottom border radius */
+            width: 100%;
+            padding: 15px 20px; 
+            color: #ffffff;
+            font-size: 1.8em; 
+            font-weight: 700;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+            transition: background-color 0.5s ease, box-shadow 0.5s ease;
+            text-align: center; /* Centered text */
+            border-radius: 12px; /* Uniform rounded corners for the band */
+            margin-bottom: 15px;
+            transform: scale(0.95); /* Slightly smaller to fit inside the box better */
+        }
+        .prediction-category-container.big {
+            background: linear-gradient(135deg, var(--big-color), #ff8c6b);
+            box-shadow: 0 4px 15px var(--big-shadow);
+        }
+        .prediction-category-container.small {
+            background: linear-gradient(135deg, var(--small-color), #66b3ff);
+            box-shadow: 0 4px 15px var(--small-shadow);
+        }
+        .prediction-category-container.wait {
+            background: linear-gradient(135deg, var(--text-muted), #999999);
+        }
+
+        .prediction-numbers-container {
+            width: 100%;
+            padding: 0 20px; /* Removed top/bottom padding as numbers are styled directly */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .prediction-numbers-title {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .prediction-numbers {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .predicted-number-badge {
+            font-size: 1.5em;
+            width: 50px; /* Slightly increased size */
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .predicted-number-badge:hover { transform: scale(1.1); }
+        .predicted-number-badge.red-num { background-color: var(--red-num); }
+        .predicted-number-badge.green-num { background-color: var(--green-num); }
+        .predicted-number-badge.na-num { background-color: var(--text-muted); }
+        /* --- END PREDICTION CARD STYLING --- */
+
+
+        .info-card-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        }
+        /* --- END UI/UX MODIFICATION: New Home Layout & Timer Styling --- */
+
+        .section-title { font-size: 1.2em; font-weight: 700; margin-bottom: 15px; }
+
+        /* Styles for Live Track and History */
+        #recent-results-section {
+            background-color: var(--bg-transparent-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 25px;
+            animation: fadeIn 1s ease-out;
+            margin-bottom: 25px;
+        }
+
+        .recent-results-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .recent-result-item {
+             display: flex;
+             align-items: center;
+             background-color: rgba(255, 255, 255, 0.6);
+             padding: 10px;
+             border-radius: 10px;
+             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-number {
+            font-size: 1.2em;
+            font-weight: 700;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+        .result-number.red { background-color: var(--loss-color); }
+        .result-number.green { background-color: var(--win-color); }
+
+        .result-info {
+            flex-grow: 1;
+            text-align: left;
+            padding-left: 15px;
+        }
+        .result-info span {
+            display: block;
+        }
+        .result-period {
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+        .result-category {
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* --- HISTORY CARD STYLES (Fixed and enhanced look) --- */
+        .history-card {
+            display: grid; /* Use grid for better alignment */
+            grid-template-columns: 1fr auto; /* Two columns: content and status badge */
+            align-items: center;
+            background-color: var(--bg-transparent-light);
+            border: 1px solid var(--border-light);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1em;
+            transition: transform 0.2s ease;
+            margin-bottom: 10px; /* Separator for history items */
+            position: relative;
+        }
+        .history-card:hover { transform: translateX(3px); }
+        
+        /* Clearer visual indicators for status */
+        .history-card.win { border-left: 5px solid var(--win-color); background-color: rgba(40, 167, 69, 0.05); }
+        .history-card.loss { border-left: 5px solid var(--loss-color); background-color: rgba(220, 53, 69, 0.05); }
+        .history-card.pending { border-left: 5px solid var(--pending-color); background-color: rgba(255, 193, 7, 0.05); }
+        /* FIX: Add style for win-jk border */
+        .history-card.win-jk { border-left: 5px solid var(--win-jk-color); background-color: rgba(102, 16, 242, 0.08); }
+
+
+        .history-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Increased gap for better spacing */
+        }
+        .history-content span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+        .history-content i {
+            font-size: 16px;
+            color: var(--text-muted);
+            width: 15px;
+        }
+        .history-content .value {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        /* Combined Prediction Details for a cleaner look */
+        .history-prediction-details {
+            font-size: 0.9em;
+            color: var(--text-dark);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .history-prediction-details i {
+            color: var(--accent-color);
+        }
+
+        /* Status Badge Enhancement */
+        .history-status-badge {
+            grid-column: 2; /* Place in the second column */
+            font-size: 0.9em;
+            font-weight: 700;
+            padding: 8px 12px; /* Increased padding */
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            min-width: 80px; /* Ensure badge is wide enough */
+        }
+        .history-status-badge.win { background-color: var(--win-color); }
+        .history-status-badge.loss { background-color: var(--loss-color); }
+        .history-status-badge.pending { background-color: var(--pending-color); }
+        .history-status-badge.win-jk { background-color: var(--win-jk-color); } /* FIX: Jackpot badge color */
+
+        /* Icon for Result Line */
+        .history-content .result-line i {
+            color: var(--primary-color);
+        }
+
+        /* Specific style for result numbers in history */
+        .history-result-number {
+            font-weight: 900;
+            margin-left: 5px;
+            display: inline-block;
+        }
+        /* --- END HISTORY CARD STYLES --- */
+
+
+        .nav-buttons { display: flex; justify-content: space-around; padding: 15px; background-color: var(--bg-transparent-light); border-top: 1px solid var(--border-light); }
+        /* UPDATED: Nav button styles to remove text */
+        .nav-buttons button {
+            background: transparent; color: var(--text-muted); padding: 12px 18px; border-radius: 10px;
+            border: none; font-size: 0; /* Hide text */
+            text-align: center; cursor: pointer; transition: all 0.3s ease;
+            display: flex; flex-direction: column; align-items: center;
+            font-weight: 700;
+        }
+        .nav-buttons button i { font-size: 26px; margin-bottom: 0; } /* Increased icon size and removed margin */
+        .nav-buttons button.active { color: var(--primary-color); background: rgba(0, 123, 255, 0.1); }
+        .nav-buttons button:hover { transform: translateY(-5px); color: var(--primary-color); }
+
+        .history-scroll-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 8px;
+        }
+        .history-scroll-container::-webkit-scrollbar { width: 8px; }
+        .history-scroll-container::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
+        .history-scroll-container::-webkit-scrollbar-track { background-color: transparent; }
+
+        .clear-btn { background: var(--loss-color); color: #ffffff; border: none; padding: 12px 20px; margin-top: 20px; border-radius: 10px; font-weight: 700; transition: background-color 0.3s ease; width: 100%; box-sizing: border-box; }
+        .clear-btn:hover { background: #e35489; }
+
+        .win-trophy, .loss-signal, .pending-spinner { display: inline-block; }
+        .pending-spinner::before { content: '\f110'; font-family: 'Font Awesome 6 Free'; font-weight: 700; color: var(--pending-color); animation: spin 1s linear infinite; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .notification {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); padding: 12px 25px;
+            border-radius: 10px; font-weight: 700; color: #ffffff; z-index: 1000;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            animation: fadeInOut 3s ease-in-out forwards;
+        }
+        .notification.win { background-color: var(--win-color); }
+        .notification.loss { background-color: var(--loss-color); }
+        .notification.color-mode { background-color: var(--primary-color); }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translate(-50%, -20px); } 10% { opacity: 1; transform: translate(-50%, 0); } 90% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -20px); } }
+
+        .win-streak-badge {
+            position: fixed; top: 30px; right: 30px; background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: #ffffff; padding: 8px 16px; font-size: 14px; font-weight: 700;
+            border-radius: 8px; box-shadow: 0 0 15px rgba(0, 123, 255, 0.2); animation: popBadge 0.4s ease, glowPulse 1s infinite;
+            z-index: 9999;
+        }
+        @keyframes popBadge { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes glowPulse { 0%, 100% { box-shadow: 0 0 15px rgba(0, 123, 255, 0.2); } 50% { box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); } }
 
         .loading-overlay {
             position: fixed;
@@ -700,28 +648,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-transparent-light);
+            background: rgba(240, 242, 245, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
-
         .loading-box {
-            background: #FFFFFF;
-            padding: 1.5rem;
-            border-radius: 1rem;
+            background: var(--bg-transparent-light);
+            padding: 30px;
+            border-radius: 10px;
             box-shadow: 0 4px 15px var(--shadow-color);
-            backdrop-filter: blur(8px);
             text-align: center;
+            animation: scaleUp 0.5s ease-in-out;
         }
-
         .loading-text {
             font-size: 1.2em;
-            margin-bottom: 1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-dark);
         }
-
         .progress-bar {
             width: 200px;
             height: 10px;
@@ -730,7 +677,6 @@
             overflow: hidden;
             border: 1px solid var(--border-light);
         }
-
         .progress-fill {
             height: 100%;
             background: var(--primary-color);
@@ -738,246 +684,218 @@
             transition: width 3s linear;
         }
 
-        /* Analysing Overlay (Kept structure but ensured hidden) */
-        .analysing-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-transparent-light);
-            display: none; /* Always hidden now */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            overflow: hidden;
-        }
-
-        .analysing-overlay.hidden { display: none; }
-
-        /* Win/Loss Animations */
         .win-glow {
             animation: glow-pulse 1s infinite alternate;
         }
-
         @keyframes glow-pulse {
-            0% { box-shadow: 0 0 10px var(--win-color); }
-            100% { box-shadow: 0 0 20px var(--win-color), 0 0 30px rgba(40, 167, 69, 0.4); }
+            0% { box-shadow: 0 0 10px rgba(40, 167, 69, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(40, 167, 69, 0.6), 0 0 30px rgba(40, 167, 69, 0.4); }
         }
 
-        .win-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #ffffff;
-            background: var(--win-color);
-            box-shadow: 0 0 10px var(--win-color);
-            animation: badge-pop 0.3s ease-out;
-            transform: rotate(10deg);
-        }
-
-        .win-jk-badge {
-            background: var(--win-jk-color);
-            box-shadow: 0 0 10px var(--win-jk-color);
-        }
-
-        @keyframes badge-pop {
-            0% { transform: scale(0.5) rotate(0); }
-            100% { transform: scale(1) rotate(10deg); }
-        }
-
-        .win-trophy::before {
-            content: '\f091';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: var(--win-color);
-            animation: bounce 2s infinite;
-        }
-
-        .loss-signal::before {
-            content: '\f071';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: var(--loss-color);
-            animation: shake 0.5s infinite;
-        }
-
-        .pending-spinner::before {
-            content: '\f110';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: var(--pending-color);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-            color: #ffffff;
-            z-index: 1002;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            animation: fadeInOut 3s ease-in-out forwards;
-        }
-
-        .notification.win { background-color: var(--win-color); }
-        .notification.loss { background-color: var(--loss-color); }
-        .notification.color-mode { background-color: var(--primary-color); }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -20px); }
-            10% { opacity: 1; transform: translate(-50%, 0); }
-            90% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -20px); }
-        }
-
-        /* Win Streak Badge */
-        .win-streak-badge {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-accent));
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            font-size: 0.9em;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 15px var(--shadow-color);
-            animation: popBadge 0.4s ease, glowPulse 1s infinite;
-            z-index: 1002;
-        }
-
-        @keyframes popBadge {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 15px var(--shadow-color); }
-            50% { box-shadow: 0 0 20px var(--shadow-color); }
-        }
-
-        /* Features List */
-        .features-list {
+        /* UPDATED: Features list to only show icons */
+        .tools-list { /* UPDATED CLASS */
             list-style-type: none;
             padding: 0;
-        }
-
-        .features-list li {
-            background: #FFFFFF;
-            border: 1px solid var(--border-light);
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 12px;
+            justify-content: space-around;
+        }
+        .tools-list li { /* UPDATED CLASS */
+            background-color: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100px; /* Fixed width for icon-only cards */
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
         }
-
-        .features-list li:hover {
+        .tools-list li:hover { /* UPDATED CLASS */
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
-
-        .features-list li i {
-            font-size: 1.5em;
+        .tools-list li i { /* UPDATED CLASS */
+            font-size: 36px; /* Larger icon */
             color: var(--primary-color);
         }
-
-        .features-list li .feature-text {
-            font-size: 0.9em;
+        .tools-list li .feature-text { /* UPDATED CLASS */
+            /* Text is hidden for icon-only mode, but kept for accessibility or future use */
+            display: none; 
         }
 
-        /* About Me Section */
         .about-me-section {
-            background: #FFFFFF;
+            background-color: var(--bg-transparent-light);
             border: 1px solid var(--border-light);
             box-shadow: 0 6px 20px var(--shadow-color);
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            margin-top: 1.5rem;
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 25px;
+            animation: fadeIn 1s ease-out;
         }
-
         .about-me-section h2 {
-            font-size: 1.5em;
-            margin-bottom: 0.75rem;
-            color: var(--primary-color);
-        }
-
-        .about-me-section p {
-            line-height: 1.5;
-            font-size: 0.9em;
-            text-transform: uppercase;
-        }
-
-        .contact-link {
-            display: inline-flex;
-            align-items: center;
-            color: #0088cc;
-            text-decoration: none;
-            font-weight: 700;
-            transition: color 0.3s ease;
-        }
-
-        .contact-link:hover {
-            color: #006699;
-        }
-
-        .contact-link .telegram-icon {
             font-size: 1.2em;
-            color: #0088cc;
-            margin-right: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .about-me-section p {
+            font-weight: 400; /* Adjusted to standard weight for body text */
+            line-height: 1.5;
+            text-transform: none;
+            font-size: 0.9em;
+        }
+        
+        /* NEW STYLES FOR TOOLS SECTION */
+        .tool-card {
+            background-color: var(--bg-transparent-light);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex; /* FIX: Enable flex for better layout of toggle */
+            flex-direction: column;
+            align-items: center;
+        }
+        .tool-card h3 {
+            font-size: 1.1em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .tool-status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            font-weight: 700;
+        }
+        .tool-status-indicator i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        .tool-status-indicator.working i {
+            color: var(--win-color);
+            animation: pulse-green 1.5s infinite;
+        }
+        .tool-status-indicator.offline i {
+            color: var(--loss-color);
+            animation: none;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
+        /* FIX: Toggle switch styles */
+        .tool-toggle {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tool-toggle .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+        }
+        .tool-toggle .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .tool-toggle .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--loss-color); /* OFF state */
+            transition: .4s;
+            border-radius: 25px;
+        }
+        .tool-toggle .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .tool-toggle input:checked + .slider {
+            background-color: var(--win-color); /* ON state */
+        }
+        .tool-toggle input:checked + .slider:before {
+            transform: translateX(20px);
         }
 
-        /* Confetti Canvas */
+
         #confetti-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1001;
+            z-index: 999;
             pointer-events: none;
         }
 
         @media (max-width: 450px) {
-            .main-container { width: 100%; max-width: 100%; }
-            .content-section { padding: 0.75rem; }
+            .main-container { width: 100vw; height: 100vh; max-width: 100%; }
+            .page-section { padding: 15px; }
+            .info-grid { 
+                grid-template-columns: 1fr 1fr;
+                gap: 12px; /* reduced gap */
+            }
+            .info-card {
+                padding: 15px;
+            }
+            .info-card-value {
+                font-size: 1.6em;
+            }
             .history-content-wrapper { max-height: calc(100vh - 160px); }
-            .navigation { max-width: 100%; }
-            .prediction-grid { grid-template-columns: 1fr; }
-            .confidence-circle { width: 100px; height: 100px; }
-            .confidence-text { font-size: 1.2rem; }
+            .history-section { padding: 15px; }
+            
+            /* Prediction Card Mobile Adjustments */
+            .prediction-category-container {
+                font-size: 1.6em; /* Adjusted for smaller screens */
+                padding: 12px 15px;
+            }
+            .predicted-number-badge {
+                font-size: 1.2em;
+                width: 40px;
+                height: 40px;
+            }
+            /* History card adjustment for small screens */
+            .history-card {
+                padding: 12px;
+            }
+            .history-content span, .history-prediction-details {
+                font-size: 0.85em;
+            }
+            .history-status-badge {
+                padding: 6px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <canvas id="confetti-canvas" style="display: none;"></canvas>
-    <div class="cosmic-wave"></div>
+
+    <div class="background-animation" id="background-animation">
+        <div class="cosmic-wave"></div>
+    </div>
 
     <div id="maintenance-overlay" class="maintenance-overlay hidden">
         <span><i class="fas fa-tools"></i></span>
@@ -985,9 +903,9 @@
     </div>
 
     <div id="login-page" class="login-container">
-        <div class="card p-6 login-box animate__animated animate__fadeInDown">
+        <div class="login-box">
             <h1 class="title">SECURE ACCESS</h1>
-            <p class="subtitle">ENTER YOUR LOGIN KEY TO PROCEED</p>
+            <p class="subtitle">ENTER YOUR LOGIN KEY TO PROCEED.</p>
             <form class="login-form">
                 <div class="input-group">
                     <i class="fas fa-key"></i>
@@ -996,9 +914,13 @@
                 <button type="submit" class="btn btn-login">LOGIN</button>
                 <div id="login-message" class="login-message"></div>
             </form>
+            <div class="divider">
+                <span>OR</span>
+            </div>
             <a href="https://t.me/cvf_kutti" class="btn btn-telegram" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-telegram-plane"></i> BUY ACCESS
+                <i class="fab fa-telegram-plane"></i> DM TO BUY
             </a>
+            <p class="footer-text">NEED HELP? CONTACT SUPPORT.</p>
         </div>
     </div>
 
@@ -1011,170 +933,156 @@
         </div>
     </div>
 
-    <div id="analysing-overlay" class="analysing-overlay hidden">
-        <div class="analysing-container">
-            <div class="analysing-hex-grid"></div>
-            <div class="analysing-title">AI PROCESSING</div>
-            <div class="analysing-progress">
-                <div class="analysing-hex"></div>
-                <i class="fas fa-microchip analysing-icon"></i>
-            </div>
-            <div class="analysing-subtitle">ANALYZING HISTORICAL PATTERNS</div>
-        </div>
-    </div>
-    <div id="errorModal" class="modal">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-bold text-red-500">ERROR</h3>
-            <button id="closeErrorModal" class="text-xl">&times;</button>
-        </div>
-        <p id="errorModalMessage"></p>
-    </div>
-
     <div id="main-page" class="hidden">
         <div class="main-container">
-            <header class="animate__animated animate__fadeInDown">
-                <svg viewBox="0 0 800 120">
-                    <text x="50%" y="50%">✪ 𝗘𝗔𝗚𝗟𝗘 𝗠𝗔𝗙𝗜𝗔 ✪</text>
-                </svg>
-            </header>
+            <div class="header">
+                <div class="header-text">EAGLE VIP SERVER</div>
+            </div>
+            <div class="nav-buttons">
+                <button id="home-btn" onclick="showPage('home')">
+                    <i class="fas fa-satellite-dish"></i>
+                </button>
+                <button id="history-btn" onclick="showPage('history')">
+                    <i class="fas fa-chart-line"></i>
+                </button>
+                <button id="tools-btn" onclick="showPage('tools')"> <i class="fas fa-screwdriver-wrench"></i>
+                </button>
+                <button id="contact-btn" onclick="showPage('contact')">
+                    <i class="fas fa-envelope"></i>
+                </button>
+            </div>
             <div class="app-content">
-                <div id="home" class="content-section active">
+                <div id="home" class="page-section active">
                     <div class="home-content">
-                        <div class="prediction-container">
-                            <div class="prediction-card" id="prediction-card">
-                                <div class="prediction-grid">
-                                    <div class="prediction-item animate__animated animate__fadeInLeft">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <h3>PERIOD</h3>
-                                        <p id="periodNumber">LOADING...</p>
-                                    </div>
-                                    <div class="prediction-item animate__animated animate__fadeInRight">
-                                        <i class="fas fa-poll"></i>
-                                        <h3>PREDICTION</h3>
-                                        <p id="currentPrediction">WAITING...</p>
-                                    </div>
-                                </div>
-                                <div class="confidence-circle">
-                                    <svg width="120" height="120">
-                                        <circle class="circle-bg" cx="60" cy="60" r="50" />
-                                        <circle class="circle-fill" id="confidenceFill" cx="60" cy="60" r="50" />
+                        <div class="prediction-card-wrapper prediction-box" id="prediction-card">
+                            <span class="info-card-title">PREDICTION</span>
+                            </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <span class="info-card-title">PERIOD</span>
+                                <span id="periodNumber" class="info-card-value">LOADING...</span>
+                            </div>
+                            <div class="info-card">
+                                <span class="info-card-title">TIME LEFT</span>
+                                <div class="timer-circle-container">
+                                    <svg class="timer-circle-svg" width="80" height="80" viewport="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                        <circle class="timer-circle-track" r="35" cx="40" cy="40"></circle>
+                                        <circle id="timerCircleProgress" class="timer-circle-progress" r="35" cx="40" cy="40" style="stroke-dasharray: 219.91; stroke-dashoffset: 219.91;"></circle>
                                     </svg>
-                                    <div class="confidence-text" id="confidenceText">0%</div>
+                                    <span id="timer" class="timer-circle-text">00:00</span>
                                 </div>
-                            </div>
+                                </div>
                         </div>
-
-                        <div class="card mb-4 p-6 animate__animated animate__fadeInUp">
-                            <h2 class="text-xl font-bold text-center mb-4"><i class="fas fa-satellite-dish"></i> LIVE TRACK RECENT RESULT</h2>
-                            <div id="recentResultsContainer" class="recent-results-grid">
-                                <div class="result-item">
-                                    <div class="result-item-number">-</div>
-                                    <p class="text-xs">PERIOD: ----</p>
-                                </div>
-                                <div class="result-item">
-                                    <div class="result-item-number">-</div>
-                                    <p class="text-xs">PERIOD: ----</p>
-                                </div>
-                                <div class="result-item">
-                                    <div class="result-item-number">-</div>
-                                    <p class="text-xs">PERIOD: ----</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-4 p-6 animate__animated animate__fadeInUp" id="energy-section">
-                            <h2 class="text-2xl font-bold text-center mb-4">REAL-TIME ANALYSIS</h2>
-                            <div class="stat-grid">
-                                <div class="stat-item">
-                                    <h3>TOTAL PREDICTIONS</h3>
-                                    <p id="totalPredictions">0</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>TOTAL WINS</h3>
-                                    <p id="totalWins">0</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>TOTAL LOSSES</h3>
-                                    <p id="totalLosses">0</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>WIN RATE</h3>
-                                    <p id="winRate">0%</p>
-                                </div>
-                            </div>
+                        
+                        <div id="recent-results-section">
+                            <div class="section-title"><i class="fas fa-sync-alt"></i> LIVE TRACK RECENT RESULTS</div>
+                            <ul id="liveTrackResultsList" class="recent-results-list">
+                                <li class="recent-result-item">LOADING...</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div id="history" class="content-section">
+                <div id="history" class="page-section">
                     <div class="history-content-wrapper">
-                        <div class="card p-6">
-                            <h2 class="text-2xl font-bold mb-4">PREDICTION HISTORY</h2>
-                            <div id="historyBody" class="history-scroll-container space-y-3">
-                                <p class="text-center text-gray-400">NO HISTORY AVAILABLE</p>
-                            </div>
+                        <div class="history-section">
+                            <div class="section-title">PREDICTION HISTORY</div>
+                            <div id="historyBody" class="history-scroll-container"></div>
                             <button class="clear-btn" onclick="clearHistory()">
                                 <i class="fas fa-trash-alt"></i> CLEAR HISTORY
                             </button>
                         </div>
                     </div>
                 </div>
-                <div id="features" class="content-section">
-                    <div class="features-content">
-                        <div class="card p-6">
-                            <h2 class="text-2xl font-bold mb-4"><i class="fas fa-cogs"></i> WORKING FEATURES</h2>
-                            <ul class="features-list">
-                                <li><i class="fas fa-brain"></i><span class="feature-text">AI-POWERED PREDICTIONS</span></li>
-                                <li><i class="fas fa-chart-area"></i><span class="feature-text">REAL-TIME DATA ANALYSIS</span></li>
-                                <li><i class="fas fa-trophy"></i><span class="feature-text">WIN/LOSS STREAK TRACKING</span></li>
-                                <li><i class="fas fa-history"></i><span class="feature-text">DETAILED PREDICTION HISTORY</span></li>
-                                <li><i class="fas fa-lock"></i><span class="feature-text">SECURE LOGIN & AUTHENTICATION</span></li>
+                <div id="tools" class="page-section"> 
+                    <div class="tools-content"> 
+                        <div class="info-card">
+                            <h2 class="section-title"><i class="fas fa-screwdriver-wrench"></i> REAL TIME WORKING TOOLS</h2>
+                            <div id="real-time-tools-list">
+                                <div class="tool-card" id="trend-analyzer-card">
+                                    <h3>TREND ANALYZER</h3>
+                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Analyzes current market data for pattern detection.</p>
+                                    <div class="tool-status-indicator working" id="trend-analyzer-status">
+                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
+                                    </div>
+                                    <div class="tool-toggle">
+                                        <label>REAL-TIME FEATURE:</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="trend-analyzer-toggle" checked onclick="toggleToolStatus('trend-analyzer')">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="tool-card" id="signal-confirmer-card">
+                                    <h3>SIGNAL CONFIRMER</h3>
+                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Validates prediction accuracy against recent results.</p>
+                                    <div class="tool-status-indicator working" id="signal-confirmer-status">
+                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
+                                    </div>
+                                    <div class="tool-toggle">
+                                        <label>REAL-TIME FEATURE:</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="signal-confirmer-toggle" checked onclick="toggleToolStatus('signal-confirmer')">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="tool-card" id="reversal-algorithm-card">
+                                    <h3>REVERSAL ALGORITHM</h3>
+                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Provides an advanced counter-prediction for volatile markets.</p>
+                                    <div class="tool-status-indicator working" id="reversal-algorithm-status">
+                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
+                                    </div>
+                                    <div class="tool-toggle">
+                                        <label>REAL-TIME FEATURE:</label>
+                                        <label class="switch">
+                                            <input type="checkbox" id="reversal-algorithm-toggle" checked onclick="toggleToolStatus('reversal-algorithm')">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="tool-card">
+                                    <h3>RISK ASSESSOR</h3>
+                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Calculates predicted loss probability.</p>
+                                    <div class="tool-status-indicator working">
+                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
+                                    </div>
+                                </div>
+                                <div class="tool-card">
+                                    <h3>AUTO STRATEGY</h3>
+                                    <p style="text-transform: none; font-size: 0.9em; font-weight: 500;">Suggests optimal betting sequence.</p>
+                                    <div class="tool-status-indicator working">
+                                        <i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact" class="page-section">
+                    <div class="contact-content">
+                        <div class="info-card">
+                            <h2 class="section-title"><i class="fas fa-handshake"></i> GET IN TOUCH</h2>
+                            <p style="text-align: left; font-weight: 400; font-size: 0.9em; color: var(--text-dark); text-transform: none;">
+                                For support, business inquiries, or to purchase a key, please contact us via Telegram.
+                            </p>
+                            <ul style="text-align: left; list-style-type: none; padding: 0; font-weight: 500;">
+                                <li style="margin-bottom: 10px;">
+                                    <i class="fab fa-telegram-plane" style="color: #0088cc;"></i>
+                                    TELEGRAM: <a href="https://t.me/error_2nd" target="_blank" rel="noopener noreferrer" style="color: var(--primary-color); text-decoration: none;">@error_2nd</a>
+                                </li>
                             </ul>
                         </div>
-                    </div>
-                </div>
-                <div id="contact" class="content-section">
-                    <div class="contact-content">
-                        <div class="card p-6 animate__animated animate__fadeInUp">
-                            <h2 class="text-2xl font-bold text-center mb-4"><i class="fas fa-info-circle"></i> ABOUT ME</h2>
-                            <p>Hello there! I'm the creator of ✪ 𝗘𝗔𝗚𝗟𝗘 𝗠𝗔𝗙𝗜𝗔 ✪. My passion lies in AI and data science, where I specialize in developing precise predictive algorithms to give you the best possible insights.</p>
-                        </div>
-                        <div class="card p-6 animate__animated animate__fadeInUp">
-                            <h2 class="text-2xl font-bold text-center mb-4"><i class="fas fa-handshake"></i> GET IN TOUCH</h2>
-                            <p>If you have questions or need assistance, feel a free to contact me directly on Telegram.</p>
-                            <a href="https://t.me/ERROR_2ND" class="contact-link mt-4" target="_blank" rel="noopener noreferrer">
-                                <i class="fab fa-telegram-plane telegram-icon"></i> @ERROR_2ND
-                            </a>
+                        <div class="about-me-section">
+                            <h2 class="section-title"><i class="fas fa-info-circle"></i> ABOUT ME</h2>
+                            <p>
+                                I am the developer of ERROR X ADVANCE, a tool created to provide users with data-driven insights. My mission is to build robust, secure, and highly accurate applications that empower users with information. This tool represents my commitment to innovation and excellence in predictive analysis.
+                            </p>
                         </div>
                     </div>
                 </div>
-                </div>
-            <div class="navigation">
-                <ul>
-                    <li class="active">
-                        <a href="#" data-section="home" onclick="showPage('home')">
-                            <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
-                            <span class="text">HOME</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-section="history" onclick="showPage('history')">
-                            <span class="icon"><ion-icon name="time-outline"></ion-icon></span>
-                            <span class="text">HISTORY</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-section="features" onclick="showPage('features')">
-                            <span class="icon"><ion-icon name="rocket-outline"></ion-icon></span>
-                            <span class="text">FEATURES</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" data-section="contact" onclick="showPage('contact')">
-                            <span class="icon"><ion-icon name="mail-outline"></ion-icon></span>
-                            <span class="text">CONTACT</span>
-                        </a>
-                    </li>
-                    <div class="indicator"></div>
-                </ul>
             </div>
         </div>
     </div>
@@ -1183,68 +1091,51 @@
 
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
     <script>
-        // Navigation Logic
-        const navItems = document.querySelectorAll('.navigation ul li');
-        const indicator = document.querySelector('.indicator');
-        
-        // Update indicator width based on number of items after removing 'themes'
-        const totalNavItems = navItems.length;
-        if (totalNavItems > 0) {
-            // Recalculate indicator position based on new, reduced number of nav items
-            navItems.forEach((item, index) => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.querySelector('.navigation ul li.active').classList.remove('active');
-                    item.classList.add('active');
-                    // Calculate and set indicator position
-                    const itemWidth = item.getBoundingClientRect().width;
-                    indicator.style.transform = `translateX(${itemWidth * index}px)`;
-                    showPage(item.querySelector('a').dataset.section);
-                });
-            });
+        // Star fragment animation logic (kept for background effect)
+        function initializeStarAnimation() {
+            const backgroundAnimationContainer = document.getElementById('background-animation');
+            const numStarsPerInterval = 4;
+            const colors = ['#FFD700', '#FF4500', '#00FF7F', '#1E90FF', '#FF69B4'];
 
-            // Set initial position and width for the first item
-            const firstItem = navItems[0];
-            const firstItemWidth = firstItem.getBoundingClientRect().width;
-            indicator.style.width = `${firstItemWidth}px`;
-            indicator.style.transform = `translateX(0px)`;
-            
-        } else {
-             // Fallback for indicator setup if no items exist (unlikely but safe)
-            indicator.style.display = 'none';
-        }
+            function createStarFragment() {
+                const star = document.createElement('div');
+                star.classList.add('star-fragment');
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                star.style.animationDelay = `${Math.random() * 1}s`;
 
+                backgroundAnimationContainer.appendChild(star);
 
-        // Theme Switching Logic (Removed custom themes, keeping default enforcement)
-        const root = document.documentElement;
-        function applyTheme(themeName) {
-            if (themeName === 'default') {
-                root.removeAttribute('data-theme');
-                localStorage.setItem('selectedTheme', 'default');
+                // Remove star after animation to prevent DOM buildup
+                setTimeout(() => {
+                    star.remove();
+                }, 6000);
             }
+
+            // Create initial stars immediately
+            for (let i = 0; i < 10; i++) {
+                createStarFragment();
+            }
+
+            // Create stars every 400ms for continuous effect
+            setInterval(() => {
+                for (let i = 0; i < numStarsPerInterval; i++) {
+                    createStarFragment();
+                }
+            }, 400);
         }
+
+        // Run star animation immediately
         document.addEventListener('DOMContentLoaded', () => {
-            applyTheme('default');
+            initializeStarAnimation();
         });
 
-        // Error Modal Logic
-        const errorModal = document.getElementById('errorModal');
-        document.getElementById('closeErrorModal').addEventListener('click', () => errorModal.classList.remove('active'));
-
-        function showErrorModal(message) {
-            document.getElementById('errorModalMessage').textContent = message;
-            errorModal.classList.add('active');
+        // Fallback: Run immediately if DOM is already loaded
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initializeStarAnimation();
         }
 
-        // Initialize Confetti
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('confetti-canvas');
-            if (canvas) confetti = new JSConfetti({ canvas });
-            showPage('home');
-            startEnergyShake();
-            updatePeriodAndTimer();
-        });
-
+        // Firebase and prediction logic
         const firebaseConfig = {
             apiKey: "AIzaSyBG1ZPt3VMGIKuGflHdRecSZHx5puY99Xs",
             authDomain: "error-57ad4.firebaseapp.com",
@@ -1259,9 +1150,9 @@
         const KEYS_DB_PATH = 'admin_panels/panelA/keys';
         const SERVER_STATUS_PATH = 'serverStatus';
         const loginMessageElement = document.getElementById('login-message');
+        const LIVE_TRACK_RESULTS_LIST = document.getElementById('liveTrackResultsList');
 
         let logoutTimerId = null;
-        let confetti = null;
 
         function getDeviceId() {
             let deviceId = localStorage.getItem('deviceId');
@@ -1277,7 +1168,6 @@
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('loading-overlay').classList.add('hidden');
-            document.getElementById('analysing-overlay').classList.add('hidden');
         }
 
         function showLogin() {
@@ -1285,7 +1175,6 @@
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('main-page').classList.add('hidden');
             document.getElementById('loading-overlay').classList.add('hidden');
-            document.getElementById('analysing-overlay').classList.add('hidden');
         }
 
         function showMain() {
@@ -1293,8 +1182,6 @@
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('main-page').classList.remove('hidden');
             document.getElementById('loading-overlay').classList.add('hidden');
-            document.getElementById('analysing-overlay').classList.add('hidden');
-            showPage('home');
         }
 
         function showLoading() {
@@ -1312,29 +1199,21 @@
             }, 3000);
         }
 
-        // REMOVED showAnalysing function, or simplified it to do nothing/hide itself if called.
-        function showAnalysing() {
-             // Quantum Analysing Removed
-             console.log("Prediction analysis started (analysing overlay disabled).");
-        }
-
-
         function showLoginMessage(message) {
             loginMessageElement.textContent = message;
-            loginMessageElement.style.color = '#DC3545';
-            showErrorModal(message);
+            loginMessageElement.style.color = '#dc3545';
         }
 
         function validateKey(key, deviceId, callback) {
             database.ref(KEYS_DB_PATH + '/' + key).once('value').then((snapshot) => {
                 const keyData = snapshot.val();
                 if (!keyData || keyData.active === false) {
-                    callback(false, 'INVALID KEY');
+                    callback(false, 'Invalid key');
                     return;
                 }
                 const now = Date.now();
                 if (keyData.expireAt < now) {
-                    callback(false, 'KEY EXPIRED');
+                    callback(false, 'Key expired');
                     return;
                 }
                 const devices = keyData.devices || {};
@@ -1346,13 +1225,13 @@
                 }
 
                 if (deviceCount >= keyData.deviceLimit) {
-                    callback(false, 'DEVICE LIMIT REACHED');
+                    callback(false, 'Device limit reached');
                     return;
                 }
                 callback(true, keyData);
             }).catch((error) => {
-                console.error('ERROR VALIDATING KEY:', error);
-                callback(false, 'ERROR VALIDATING KEY');
+                console.error('Error validating key:', error);
+                callback(false, 'Error validating key');
             });
         }
 
@@ -1371,12 +1250,15 @@
                 if (savedKey) {
                     validateKey(savedKey, deviceId, (valid, keyData) => {
                         if (valid) {
-                            if (logoutTimerId) clearTimeout(logoutTimerId);
+                            if (logoutTimerId) {
+                                clearTimeout(logoutTimerId);
+                            }
                             const expiryTimeout = keyData.expireAt - Date.now();
                             logoutTimerId = setTimeout(() => {
                                 showLogin();
                                 logoutTimerId = null;
                             }, expiryTimeout);
+
                             showLoading();
                         } else {
                             localStorage.removeItem('loginKey');
@@ -1410,7 +1292,9 @@
                     }
                     localStorage.setItem('loginKey', loginKey);
 
-                    if (logoutTimerId) clearTimeout(logoutTimerId);
+                    if (logoutTimerId) {
+                        clearTimeout(logoutTimerId);
+                    }
                     const expiryTimeout = keyData.expireAt - Date.now();
                     logoutTimerId = setTimeout(() => {
                         showLogin();
@@ -1423,13 +1307,21 @@
         });
 
         const periodNumberElement = document.getElementById('periodNumber');
-        const currentPredictionElement = document.getElementById('currentPrediction');
-        const historyBody = document.getElementById('historyBody');
+        const timerElement = document.getElementById('timer');
         const predictionCard = document.getElementById('prediction-card');
-        const energySection = document.getElementById('energy-section');
-        const confidenceFill = document.getElementById('confidenceFill');
-        const confidenceText = document.getElementById('confidenceText');
-        const recentResultsContainer = document.getElementById('recentResultsContainer');
+        const historyBody = document.getElementById('historyBody');
+        const homePage = document.getElementById('home');
+        const historyPage = document.getElementById('history');
+        const toolsPage = document.getElementById('tools'); // UPDATED VARIABLE
+        const contactPage = document.getElementById('contact');
+        // --- START UI/UX MODIFICATION: Timer Circle Elements ---
+        const timerCircleProgress = document.getElementById('timerCircleProgress');
+        const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 35; // 2 * pi * radius (35)
+        if (timerCircleProgress) {
+            timerCircleProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
+            timerCircleProgress.style.strokeDashoffset = CIRCLE_CIRCUMFERENCE;
+        }
+        // --- END UI/UX MODIFICATION: Timer Circle Elements ---
 
         const numberColors = {
             0: 'red', 2: 'red', 4: 'red', 6: 'red', 8: 'red',
@@ -1439,7 +1331,6 @@
         const smallNumbers = [0, 1, 2, 3, 4];
         const RED_NUMBERS = [0, 2, 4, 6, 8];
         const GREEN_NUMBERS = [1, 3, 5, 7, 9];
-        const VIOLET_NUMBERS = [0, 5]; // Numbers that are both colors (Violet/Joker)
 
         let lastPeriodNumber = null;
         let history = [];
@@ -1449,43 +1340,94 @@
         let lossStreak = 0;
         let totalWins = 0;
         let totalLosses = 0;
+        let confetti = null;
 
-        function showPage(id) {
-            console.log(`Showing page: ${id}`);
-            const pages = document.querySelectorAll('.content-section');
-            const navItems = document.querySelectorAll('.navigation ul li');
-            pages.forEach(p => {
-                p.classList.remove('active');
-                p.style.display = 'none';
-            });
-            const targetPage = document.getElementById(id);
-            if (targetPage) {
-                targetPage.classList.add('active');
-                targetPage.style.display = 'flex';
-            } else {
-                console.error(`Page with ID ${id} not found`);
-            }
-            navItems.forEach(item => item.classList.remove('active'));
-            const activeItem = Array.from(navItems).find(item => item.querySelector('a').dataset.section === id);
-            if (activeItem) {
-                activeItem.classList.add('active');
-                const index = Array.from(navItems).indexOf(activeItem);
-                const itemWidth = activeItem.getBoundingClientRect().width;
-                indicator.style.transform = `translateX(${itemWidth * index}px)`;
-            }
-            renderHistory();
-            updateRealTimeStats();
+        // FIX: Tool status state (Adding new tools)
+        let trendAnalyzerEnabled = true;
+        let signalConfirmerEnabled = true;
+        let reversalAlgorithmEnabled = true;
+        
+        // --- FIX: Tool Toggle Functionality ---
+        function getToolStatus(toolId) {
+            if (toolId === 'trend-analyzer') return trendAnalyzerEnabled;
+            if (toolId === 'signal-confirmer') return signalConfirmerEnabled;
+            if (toolId === 'reversal-algorithm') return reversalAlgorithmEnabled;
+            return true; // Default for non-toggled tools (Risk Assessor, Auto Strategy)
         }
 
-        function startEnergyShake() {
-            let energyShakeInterval = null;
-            if (energyShakeInterval) clearInterval(energyShakeInterval);
-            energyShakeInterval = setInterval(() => {
-                energySection.classList.add('animate__animated', 'animate__shakeX');
-                setTimeout(() => {
-                    energySection.classList.remove('animate__animated', 'animate__shakeX');
-                }, 500);
-            }, 4000);
+        function setToolStatus(toolId, isEnabled) {
+            if (toolId === 'trend-analyzer') trendAnalyzerEnabled = isEnabled;
+            if (toolId === 'signal-confirmer') signalConfirmerEnabled = isEnabled;
+            if (toolId === 'reversal-algorithm') reversalAlgorithmEnabled = isEnabled;
+        }
+        // --- END FIX ---
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('confetti-canvas');
+            if (canvas) {
+                confetti = new JSConfetti({ canvas });
+            }
+            document.getElementById('home-btn').classList.add('active');
+            showPage('home');
+            // Start live track updates
+            fetchAndRenderLiveTrack();
+            setInterval(fetchAndRenderLiveTrack, 5000); // Poll for new results every 5 seconds
+            
+            // Initial render for the prediction card (WAITING state)
+            renderPredictionCard('WAITING', ['N/A', 'N/A']);
+
+            // FIX: Set initial state of the tool toggles
+            document.getElementById('trend-analyzer-toggle').checked = trendAnalyzerEnabled;
+            document.getElementById('signal-confirmer-toggle').checked = signalConfirmerEnabled;
+            document.getElementById('reversal-algorithm-toggle').checked = reversalAlgorithmEnabled;
+        });
+
+        // FIX: Function to handle the tool's real-time feature
+        function toggleToolStatus(toolId) {
+            const toggle = document.getElementById(`${toolId}-toggle`);
+            const statusIndicator = document.getElementById(`${toolId}-status`);
+            const isEnabled = toggle.checked;
+
+            setToolStatus(toolId, isEnabled); // Update the state variable
+
+            if (isEnabled) {
+                statusIndicator.classList.remove('offline');
+                statusIndicator.classList.add('working');
+                statusIndicator.innerHTML = '<i class="fas fa-circle-notch"></i> STATUS: REAL-TIME ONLINE';
+                showNotification('win', `${toolId.replace('-', ' ').toUpperCase()} ENABLED!`);
+            } else {
+                statusIndicator.classList.remove('working');
+                statusIndicator.classList.add('offline');
+                statusIndicator.innerHTML = '<i class="fas fa-times-circle"></i> STATUS: OFFLINE';
+                showNotification('loss', `${toolId.replace('-', ' ').toUpperCase()} DISABLED!`);
+            }
+        }
+        // END FIX
+
+        function showPage(id) {
+            const pages = document.querySelectorAll('.page-section');
+            const navButtons = document.querySelectorAll('.nav-buttons button');
+            pages.forEach(p => p.classList.remove('active'));
+            navButtons.forEach(btn => btn.classList.remove('active'));
+
+            homePage.style.transform = 'translateX(100%)';
+            historyPage.style.transform = 'translateX(100%)';
+            toolsPage.style.transform = 'translateX(100%)'; // UPDATED PAGE
+            contactPage.style.transform = 'translateX(100%)';
+
+            if (id === 'home') {
+                homePage.style.transform = 'translateX(0)';
+            } else if (id === 'history') {
+                historyPage.style.transform = 'translateX(0)';
+            } else if (id === 'tools') { // UPDATED ID
+                toolsPage.style.transform = 'translateX(0)'; // UPDATED PAGE
+            } else if (id === 'contact') {
+                contactPage.style.transform = 'translateX(0)';
+            }
+            
+            document.getElementById(id).classList.add('active');
+            document.getElementById(id + '-btn').classList.add('active');
         }
 
         async function updatePeriodAndTimer() {
@@ -1494,225 +1436,244 @@
             if (currentTime - lastTimerUpdate < 1000) return;
             lastTimerUpdate = currentTime;
 
+            // Calculate current 1-minute period number (Placeholders based on original)
             const year = now.getUTCFullYear();
             const month = String(now.getUTCMonth() + 1).padStart(2, '0');
             const day = String(now.getUTCDate()).padStart(2, '0');
             const totalMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
             const periodNumber = `${year}${month}${day}1000${10001 + totalMinutes}`;
             const remainingSeconds = 60 - now.getUTCSeconds();
+            
+            // --- START UI/UX MODIFICATION: Timer Circle Logic ---
+            const percentage = remainingSeconds / 60; // Progress from 1 (full) to 0 (empty)
+            const offset = CIRCLE_CIRCUMFERENCE * (1 - percentage);
+            
+            if (timerCircleProgress) {
+                timerCircleProgress.style.strokeDashoffset = offset;
+            }
+            // --- END UI/UX MODIFICATION: Timer Circle Logic ---
 
             if (lastPeriodNumber !== periodNumber) {
-                showAnalysing(); // This function is now a no-op
+                // When period changes, check the result of the *previous* period
                 if (pendingResult && lastPeriodNumber) {
-                    await checkPendingResult(lastPeriodNumber).catch(err => console.error('ERROR CHECKING PENDING:', err));
+                    await checkPendingResult(lastPeriodNumber).catch(err => console.error('Error checking pending:', err));
                 }
                 lastPeriodNumber = periodNumber;
                 periodNumberElement.textContent = periodNumber || 'N/A';
                 await generatePrediction(periodNumber);
             }
-            
-            // NEW: Call the recent results renderer every second
-            const recentResults = await fetchLastResultsFromAPI();
-            renderRecentResults(recentResults);
 
+            timerElement.textContent = `${String(remainingSeconds).padStart(2, '0')}`; // Display only seconds inside circle
             updateRealTimeStats();
         }
         setInterval(updatePeriodAndTimer, 1000);
 
         async function fetchLastResultsFromAPI() {
             try {
-                // Fetch the last 30 results to get the most recent ones
+                // Using the publicly available API path for real-time results
                 const response = await fetch('https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json');
                 const data = await response.json();
-                if (!data?.data?.list) {
-                    throw new Error('Invalid API response');
-                }
-                return data.data.list.slice(0, 3) || []; // Return only the last 3 results
+                return data?.data?.list || [];
             } catch (e) {
-                console.error('API FETCH ERROR:', e);
-                // Don't show modal every second, only on prediction gen failure
+                console.error('API fetch error:', e);
                 return [];
             }
         }
+        
+        // Render Live Track Results
+        async function fetchAndRenderLiveTrack() {
+            const results = await fetchLastResultsFromAPI();
+            const top3 = results.slice(0, 3);
+            renderLiveTrackResults(top3);
+        }
 
-        // NEW: Function to render recent results
-        function renderRecentResults(results) {
-            let html = '';
+        function renderLiveTrackResults(results) {
+            if (!LIVE_TRACK_RESULTS_LIST) return;
+
+            LIVE_TRACK_RESULTS_LIST.innerHTML = ''; // Clear existing list
+
             if (results.length === 0) {
-                 html = `<div class="result-item"><div class="result-item-number">-</div><p class="text-xs">PERIOD: ----</p></div>`.repeat(3);
-            } else {
-                results.forEach(r => {
-                    const number = parseInt(r.number, 10);
-                    let colorClass = '';
-                    let numberColorClass = 'text-gray-600';
-
-                    if (number === 0 || number === 5) {
-                        // Handle Violet/Joker numbers
-                        colorClass = 'violet';
-                        numberColorClass = 'violet-text';
-                    } else if (number % 2 === 0) {
-                        colorClass = 'red';
-                        numberColorClass = 'red-text';
-                    } else {
-                        colorClass = 'green';
-                        numberColorClass = 'green-text';
-                    }
-
-                    html += `
-                        <div class="result-item ${colorClass}">
-                            <div class="result-item-number ${numberColorClass}">${number}</div>
-                            <p class="text-xs">PERIOD: ${String(r.issueNumber).slice(-4)}</p>
-                        </div>
-                    `;
-                });
+                LIVE_TRACK_RESULTS_LIST.innerHTML = '<li class="recent-result-item">NO RECENT RESULTS AVAILABLE</li>';
+                return;
             }
-            recentResultsContainer.innerHTML = html;
-        }
 
-        /**
-         * Generates two unique numbers aligned with the predicted category (BIG/SMALL).
-         * Prioritizes the number that shares the same color as the predicted number (BIG/SMALL).
-         * @param {string} predictionCategory - 'BIG' or 'SMALL'
-         * @returns {number[]} - An array of two unique numbers.
-         */
-        function getNumbersForPrediction(predictionCategory) {
-            const sizeNumbers = predictionCategory === 'BIG' ? bigNumbers : smallNumbers;
+            results.forEach(result => {
+                const actualNumber = parseInt(result.number, 10);
+                // The API doesn't always provide the correct big/small status, so we calculate it
+                const actualCategory = bigNumbers.includes(actualNumber) ? 'BIG' : (smallNumbers.includes(actualNumber) ? 'SMALL' : 'N/A');
+                const resultColor = numberColors[actualNumber];
 
-            // Step 1: Filter numbers by size and color (BIG/SMALL)
-            // Determine a "strong" color prediction: Red for BIG-even, Green for SMALL-odd, etc.
-            const isDefaultGreen = predictionCategory === 'SMALL'; // 1, 3, 5, 7, 9
-            const primaryNumbers = isDefaultGreen ? GREEN_NUMBERS.filter(n => sizeNumbers.includes(n)) : RED_NUMBERS.filter(n => sizeNumbers.includes(n));
-            const secondaryNumbers = isDefaultGreen ? RED_NUMBERS.filter(n => sizeNumbers.includes(n)) : GREEN_NUMBERS.filter(n => sizeNumbers.includes(n));
-
-            let predictedNumbers = [];
-            
-            // Combine primary and secondary, ensuring uniqueness and prioritising primary
-            const availableNumbers = [...new Set([...primaryNumbers, ...secondaryNumbers])].filter(n => sizeNumbers.includes(n));
-            
-            if (availableNumbers.length < 2) {
-                // Fallback: If not enough specific numbers, just take any two unique from the size group
-                let num1 = availableNumbers[0] || sizeNumbers[Math.floor(Math.random() * sizeNumbers.length)];
-                let num2;
-                do {
-                    num2 = sizeNumbers[Math.floor(Math.random() * sizeNumbers.length)];
-                } while (num2 === num1);
-                predictedNumbers = [num1, num2].filter((v, i, a) => a.indexOf(v) === i); // Ensure unique after fallback
-            } else {
-                // Select two unique numbers: one from the primary group if possible, and then another
-                let num1 = primaryNumbers.length > 0 ? primaryNumbers[Math.floor(Math.random() * primaryNumbers.length)] : availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-                predictedNumbers.push(num1);
-
-                let num2;
-                let attempts = 0;
-                do {
-                    num2 = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
-                    attempts++;
-                } while (num2 === num1 && attempts < 10);
+                const listItem = document.createElement('li');
+                listItem.classList.add('recent-result-item');
                 
-                if (num2 !== num1) {
-                    predictedNumbers.push(num2);
-                } else {
-                     // If still only one unique number after many attempts (highly unlikely with the combined list)
-                    // Just take a secondary one
-                    let backup = secondaryNumbers.filter(n => n !== num1);
-                    if (backup.length > 0) {
-                        predictedNumbers.push(backup[0]);
-                    }
-                }
+                listItem.innerHTML = `
+                    <div class="result-number ${resultColor}">
+                        ${actualNumber}
+                    </div>
+                    <div class="result-info">
+                        <span class="result-category">${actualCategory}</span>
+                        <span class="result-period">PERIOD: ${result.issueNumber}</span>
+                    </div>
+                `;
+                LIVE_TRACK_RESULTS_LIST.appendChild(listItem);
+            });
+        }
+        
+        // Render the Prediction Card with Dynamic Styling (Fixed)
+        function renderPredictionCard(category, numbers) {
+            let categoryClass = 'wait';
+            let categoryText = 'WAITING FOR PREDICTION';
+
+            if (category === 'BIG') {
+                categoryClass = 'big';
+                categoryText = 'PREDICT: BIG';
+            } else if (category === 'SMALL') {
+                categoryClass = 'small';
+                categoryText = 'PREDICT: SMALL';
             }
 
-            // Ensure only 2 unique numbers, sorted
-            return Array.from(new Set(predictedNumbers)).slice(0, 2).sort((a, b) => a - b);
+            const numberBadges = numbers.map(num => {
+                const numStr = String(num);
+                let numClass = 'na-num';
+
+                if (numStr !== 'N/A') {
+                    numClass = numberColors[parseInt(num, 10)] + '-num';
+                }
+
+                return `<div class="predicted-number-badge ${numClass}">${numStr}</div>`;
+            }).join('');
+
+            // UPDATED: Removed period from the title (info-card-title is already there)
+            predictionCard.innerHTML = `
+                <span class="info-card-title">PREDICTION</span> 
+                <div class="prediction-category-container ${categoryClass}">
+                    ${categoryText}
+                </div>
+                <div class="prediction-numbers-container">
+                    <div class="prediction-numbers-title">NUMBER PREDICTIONS</div>
+                    <div class="prediction-numbers">
+                        ${numberBadges}
+                    </div>
+                </div>
+            `;
         }
+
+        function getNumbers(color, size) {
+            const colorNumbers = color === 'red' ? RED_NUMBERS : GREEN_NUMBERS;
+            const sizeNumbers = size === 'BIG' ? bigNumbers : smallNumbers;
+
+            const filtered = colorNumbers.filter(num => sizeNumbers.includes(num));
+
+            const finalNumbers = [];
+            const tempFiltered = [...filtered];
+
+            if (tempFiltered.length > 0) {
+                const index1 = Math.floor(Math.random() * tempFiltered.length);
+                finalNumbers.push(tempFiltered[index1]);
+                tempFiltered.splice(index1, 1);
+            }
+            
+            if (tempFiltered.length > 0) {
+                const index2 = Math.floor(Math.random() * tempFiltered.length);
+                finalNumbers.push(tempFiltered[index2]);
+            } else if (finalNumbers.length > 0) {
+                 // If only one unique number exists, duplicate it (or just show one)
+                 finalNumbers.push(finalNumbers[0]);
+            } else {
+                 // Fallback for extreme case
+                 finalNumbers.push('N/A', 'N/A');
+            }
+
+            // Ensure we only return 2 numbers and sort them
+            return finalNumbers.slice(0, 2).sort((a, b) => {
+                if (a === 'N/A' || b === 'N/A') return 0;
+                return a - b;
+            });
+        }
+
 
         function checkNumberWin(predictedNumbers, actualNumber) {
-            return predictedNumbers.includes(actualNumber);
+            // Check if actualNumber is in the array of predictedNumbers (as strings or numbers)
+            return predictedNumbers.map(String).includes(String(actualNumber));
         }
-
-        // --- NEW PREDICTION LOGIC START ---
-        function simpleMajorityPredict(history) {
-            if (history.length < 3) {
-                return { 
-                    prediction: Math.random() > 0.5 ? "BIG" : "SMALL", 
-                    confidence: 50 + Math.random() * 5,
-                };
-            }
-
-            // Get the last 3 results
-            const recentThree = history.slice(0, 3).map(r => r.resultType);
-            
-            let counts = { BIG: 0, SMALL: 0 };
-            
-            recentThree.forEach(result => {
-                counts[result]++;
-            });
-
-            let finalPrediction = "SMALL"; // Default to SMALL
-            let confidence = 55;
-            
-            if (counts.BIG > counts.SMALL) {
-                finalPrediction = "BIG";
-                confidence = 85; // High confidence if there is a majority (2 out of 3)
-            } else if (counts.SMALL > counts.BIG) {
-                finalPrediction = "SMALL";
-                confidence = 85; // High confidence if there is a majority (2 out of 3)
-            } else {
-                // If BIG and SMALL are tied (e.g. BIG, SMALL, BIG, but only 3 checked, so 2BIG, 1SMALL)
-                // This logic is simple and depends on what's in 'recentThree'
-                
-                // If tied (which means two different results in a two-item history, or one type is 1 and the other is 1 and the last one is not in the size group)
-                // For a 3-entry history, a tie is impossible for just BIG/SMALL count (it would be 2:1 or 3:0).
-                
-                // Let's use the first result as a tie-breaker if there's no clear majority
-                if (history.length >= 1) {
-                    finalPrediction = history[0].resultType; // Predict the last result again
-                    confidence = 70; // Medium confidence for a tie-breaker based on last result
-                } else {
-                     // Should be covered by history.length < 3, but fallback to random
-                    finalPrediction = Math.random() > 0.5 ? "BIG" : "SMALL";
-                    confidence = 50;
-                }
-            }
-
-            return {
-                prediction: finalPrediction,
-                confidence: confidence
-            };
-        }
-        // --- NEW PREDICTION LOGIC END ---
 
         async function generatePrediction(period) {
+            // Only generate a new prediction if it's a new period and no pending result exists for it
             const existingEntry = history.find(entry => entry.period === period);
-            if (existingEntry && existingEntry.status !== 'PENDING') return;
-        
-            currentPredictionElement.textContent = 'PROCESSING...';
-            
-            try {
-                const recentResults = await fetchLastResultsFromAPI();
-                
-                // Convert API results for the new prediction engine
-                const formattedHistory = recentResults.map(r => ({
-                    resultType: parseInt(r.number, 10) >= 5 ? 'BIG' : 'SMALL',
-                    result: parseInt(r.number, 10)
-                }));
-                
-                // --- Call New Prediction Logic ---
-                const predictionResult = simpleMajorityPredict(formattedHistory);
-                
-                const predictionCategory = predictionResult.prediction;
-                const confidence = Math.floor(predictionResult.confidence);
-                
-                // Get two numbers aligned with the prediction category
-                const predictedNumbers = getNumbersForPrediction(predictionCategory);
+            if (existingEntry && existingEntry.status !== 'PENDING') {
+                return;
+            }
 
-                currentPredictionElement.innerHTML = `${predictionCategory} | (${predictedNumbers.join(', ')})`;
-                confidenceFill.style.strokeDashoffset = 314 - (314 * confidence / 100);
-                confidenceText.textContent = `${confidence}%`;
+            let predictionCategory = 'WAITING';
+            let predictedNumbers = ['N/A', 'N/A'];
+            
+            // Immediately render the card in 'WAITING' state
+            renderPredictionCard(predictionCategory, predictedNumbers);
+
+
+            try {
+                const recent = await fetchLastResultsFromAPI();
                 
+                // --- START NEW PREDICTION LOGIC: Majority Vote of Last 3 Big/Small ---
+                if (recent.length >= 3) {
+                    const last3 = recent.slice(0, 3).map(r => {
+                        const num = parseInt(r.number, 10);
+                        return bigNumbers.includes(num) ? 'BIG' : (smallNumbers.includes(num) ? 'SMALL' : 'N/A');
+                    }).filter(s => s !== 'N/A');
+
+                    const counts = last3.reduce((acc, val) => {
+                        acc[val] = (acc[val] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    let determinedPrediction = 'WAITING';
+                    if (counts['BIG'] > counts['SMALL']) {
+                        determinedPrediction = 'BIG';
+                    } else if (counts['SMALL'] > counts['BIG']) {
+                        determinedPrediction = 'SMALL';
+                    } else if (counts['BIG'] === 1 && counts['SMALL'] === 1 && last3.length === 2) {
+                        // Special case for TIE (Big, Small) - predict the most recent
+                         determinedPrediction = last3[0];
+                    } else if (counts['BIG'] === 1 && counts['SMALL'] === 1 && last3.length === 3) {
+                        // Special case for TIE (Big, Small, Big) or (Small, Big, Small) - predict the most recent
+                         determinedPrediction = last3[0];
+                    }
+                    
+                    if (determinedPrediction !== 'WAITING') {
+                        let finalPrediction = determinedPrediction;
+                        
+                        // Apply Reversal Algorithm logic if enabled (simple mock: just reverse the prediction)
+                        if (reversalAlgorithmEnabled && Math.random() < 0.2) { // 20% chance to reverse
+                             finalPrediction = (determinedPrediction === 'BIG') ? 'SMALL' : 'BIG';
+                             showNotification('color-mode', 'REVERSAL ALGORITHM ACTIVE!');
+                        }
+
+                        // Determine the Color for Number Prediction (Default to Red or Green)
+                        // This uses a simple alternating color strategy as the user didn't specify color logic.
+                        const lastResultColor = recent[0] ? numberColors[parseInt(recent[0].number, 10)] : 'red';
+                        let predictionColor = lastResultColor === 'red' ? 'green' : 'red';
+
+                        predictionCategory = finalPrediction;
+                        // FIX: Only generate prediction if Trend Analyzer is enabled (Simulate feature working)
+                        if (trendAnalyzerEnabled) {
+                            predictedNumbers = getNumbers(predictionColor, predictionCategory);
+                        } else {
+                            // If disabled, show no prediction for numbers
+                             predictedNumbers = ['N/A', 'N/A'];
+                        }
+                    }
+                }
+                // --- END NEW PREDICTION LOGIC ---
+
+                
+                // Update the card with the actual prediction
+                renderPredictionCard(predictionCategory, predictedNumbers);
+
+
                 if (existingEntry) {
                     existingEntry.category = predictionCategory;
                     existingEntry.numbers = predictedNumbers;
-                } else {
+                } else if (predictionCategory !== 'WAITING') {
                     history.unshift({
                         period,
                         category: predictionCategory,
@@ -1720,112 +1681,173 @@
                         status: 'PENDING',
                         isNumberWin: false
                     });
-                    if (history.length > 100) history.pop();
+                    if (history.length > 100) {
+                        history.pop();
+                    }
                 }
                 pendingResult = history[0];
                 renderHistory();
             } catch (error) {
                 console.error("ERROR IN GENERATEPREDICTION:", error);
-                currentPredictionElement.textContent = 'PREDICTION ERROR';
-                showErrorModal('Failed to generate prediction. Retrying...');
+                renderPredictionCard('ERROR', ['N/A', 'N/A']);
             }
         }
 
+        // --- FIX: Check Pending Result Function ---
         async function checkPendingResult(period) {
-            if (!pendingResult || pendingResult.period !== period) return;
-            // Fetch more than one result to ensure the last completed period is checked
-            const apiResultData = await fetchLastResultsFromAPI(); 
+            // Find the pending entry in history
+            const entryIndex = history.findIndex(entry => entry.period === period && entry.status === 'PENDING');
+            if (entryIndex === -1) return;
+            let entry = history[entryIndex];
+            
+            // Re-fetch the latest results to ensure we have the most up-to-date data
+            const apiResultData = await fetchLastResultsFromAPI();
             if (!apiResultData.length) return;
-            const latest = apiResultData.find(r => r.issueNumber == period);
+            
+            // Find the result matching the period
+            const latest = apiResultData.find(result => result.issueNumber === period);
 
-            if (latest && latest.issueNumber == period) {
+            if (latest) {
                 const actualNumber = parseInt(latest.number, 10);
-                const actualCategory = bigNumbers.includes(actualNumber) ? 'BIG' : 'SMALL';
+                // Calculate size based on the number
+                const actualCategory = bigNumbers.includes(actualNumber) ? 'BIG' : (smallNumbers.includes(actualNumber) ? 'SMALL' : 'N/A');
 
-                const isWin = pendingResult.category === actualCategory;
-                const isNumberWin = checkNumberWin(pendingResult.numbers, actualNumber);
+                const isWin = entry.category === actualCategory;
+                const isNumberWin = checkNumberWin(entry.numbers, actualNumber);
 
-                pendingResult.status = isWin ? 'WIN' : 'LOSS';
-                pendingResult.apiCategory = actualCategory;
-                pendingResult.apiNumber = actualNumber;
-                pendingResult.isNumberWin = isNumberWin;
+                entry.status = isWin ? 'WIN' : 'LOSS';
+                entry.apiCategory = actualCategory;
+                entry.apiNumber = actualNumber;
+                entry.isNumberWin = isNumberWin;
 
-                // Update streak counters
                 if (isWin) {
-                    totalWins++;
                     winStreak++;
+                    totalWins++;
                     lossStreak = 0;
                     showWinAnimation();
                     if (confetti) {
                         document.getElementById('confetti-canvas').style.display = 'block';
                         confetti.addConfetti({
                             confettiRadius: 6,
-                            confettiNumber: 1000,
-                            confettiColors: ['#FFD700', '#FF6347', '#5D5DFF', '#32CD32', '#FF69B4']
+                            confettiNumber: 500,
+                            confettiColors: [
+                                '#FFD700', '#FF6347', '#5D5DFF', '#32CD32'
+                            ]
                         }).then(() => {
                             setTimeout(() => {
                                 document.getElementById('confetti-canvas').style.display = 'none';
-                            }, 2000);
+                            }, 500);
                         });
                     }
                     if (isNumberWin) {
                         showNotification('win', 'WIN + JK!');
                     } else {
-                        showNotification('win', `WIN!`);
+                        showNotification('win', `WIN! WIN STREAK: ${winStreak}`);
                     }
                 } else {
+                    winStreak = 0;
                     totalLosses++;
                     lossStreak++;
-                    winStreak = 0;
                     showLossAnimation();
-                    showNotification('loss', `LOSS!`);
+                    showNotification('loss', `LOSS! LOSS STREAK: ${lossStreak}`);
                 }
                 renderHistory();
-                pendingResult = null;
+                // If the updated entry was the most recent pending result, clear pendingResult
+                if (pendingResult && pendingResult.period === period) {
+                    pendingResult = null;
+                }
             }
         }
-        // --- END OF NEW LOGIC APPLICATION ---
+        // --- END FIX ---
 
 
+        // RENDER HISTORY FUNCTION (FIXED)
         function renderHistory() {
-            if (!historyBody) {
-                console.error('History body element not found');
-                return;
-            }
-            if (history.length === 0) {
-                historyBody.innerHTML = '<p class="text-center text-gray-400">NO HISTORY AVAILABLE</p>';
-                return;
-            }
+            if (!historyBody) return;
+            
             const renderedHistory = history.map(h => {
-                const statusClass = h.status === 'PENDING' ? 'pending' : (h.status === 'WIN' ? 'win' : 'loss');
-                const winBadge = h.status === 'WIN' ? `<div class="win-badge ${h.isNumberWin ? 'win-jk-badge' : ''}">${h.isNumberWin ? 'WIN + JK' : 'WIN'}</div>` : '';
+                let statusClass = h.status.toLowerCase();
+                
+                // Determine the right badge text and class
+                let statusBadgeText = h.status;
+                let statusBadgeClass = statusClass;
+                let resultDetails = '';
+                
+                // FIX: Correctly check for WIN/LOSS status and apply the correct class/text
+                if (h.status === 'WIN' || h.status === 'LOSS') {
+                    if (h.status === 'WIN') {
+                        // FIX: Use win-jk class/text for number win
+                        statusBadgeText = h.isNumberWin ? 'WIN + JK' : 'WIN';
+                        statusBadgeClass = h.isNumberWin ? 'win-jk' : 'win';
+                        statusClass = h.isNumberWin ? 'win-jk' : 'win'; // FIX: Apply border-left color
+                    } else if (h.status === 'LOSS') {
+                         statusBadgeText = 'LOSS';
+                         statusBadgeClass = 'loss';
+                         statusClass = 'loss'; // FIX: Apply border-left color
+                    }
+                    
+                    const actualNumber = h.apiNumber;
+                    // Ensure apiNumber and numberColors are defined before using
+                    const numberColorClass = (actualNumber !== undefined && numberColors[actualNumber] !== undefined) ? numberColors[actualNumber] : 'text-muted';
+                    
+                    // Only display result if the data is available
+                    if (h.apiCategory && actualNumber !== undefined) {
+                         resultDetails = `
+                            <span class="result-line">
+                                <i class="fas fa-check-circle"></i> RESULT: <span class="value">${h.apiCategory}</span>
+                                | NO: <span class="history-result-number" style="color: var(--${numberColorClass}-num);">${actualNumber}</span>
+                            </span>
+                        `;
+                    }
+                    
+                } else {
+                    statusBadgeText = `<span class="pending-spinner"></span> PENDING`;
+                    statusBadgeClass = 'pending';
+                    statusClass = 'pending'; // FIX: Apply border-left color
+                }
+                // END FIX
+                
+                // Display predicted numbers correctly
+                const predictedNumbersDisplay = h.numbers.map(num => {
+                    const numStr = String(num);
+                    // Ensure the conversion to color class handles 'N/A' safely
+                    const numColorClass = numStr === 'N/A' ? 'text-muted' : numberColors[parseInt(num, 10)];
+                    // Use a span with dynamic color based on the number's color mapping
+                    // NOTE: '--text-muted' or a general dark color is the fallback for 'N/A'
+                    const colorStyle = numColorClass === 'text-muted' ? 'color: var(--text-muted);' : `color: var(--${numColorClass}-num);`;
+
+                    return `<span style="font-size: 1.0em; ${colorStyle}">${numStr}</span>`;
+                }).join(' / ');
+                
                 return `
-                    <div class="history-item ${statusClass}">
-                        ${winBadge}
-                        <div class="flex items-center space-x-3">
-                            <i class="fas ${h.status === 'WIN' ? 'fa-check-circle text-green-500' : (h.status === 'LOSS' ? 'fa-times-circle text-red-500' : 'fa-hourglass-half text-yellow-500')} text-2xl"></i>
-                            <div>
-                                <p class="font-semibold">PERIOD: ${h.period.slice(-5)}</p>
-                                <p class="text-sm">PRED: ${h.category} | (${h.numbers.join(', ')}) | ACTUAL: ${h.status === 'PENDING' ? '?' : `${h.apiCategory} | NO: ${h.apiNumber}`}</p>
-                            </div>
+                    <div class="history-card ${statusClass}">
+                        <div class="history-content">
+                            <span class="result-period">PERIOD: <span class="value">${h.period || 'N/A'}</span></span>
+                            <span>
+                                <i class="fas fa-bullseye"></i> PREDICT: <span class="value">${h.category}</span>
+                            </span>
+                            <span class="history-prediction-details">
+                                <i class="fas fa-dice"></i> NUMBERS: ${predictedNumbersDisplay}
+                            </span>
+                            ${resultDetails}
                         </div>
-                        <span class="text-sm font-bold">${h.status || 'PENDING'}</span>
+                        <div class="history-status-badge ${statusBadgeClass}">
+                            ${statusBadgeText}
+                        </div>
                     </div>`;
             }).join("");
             historyBody.innerHTML = renderedHistory;
             historyBody.scrollTop = historyBody.scrollHeight;
         }
 
+
         function updateRealTimeStats() {
+            // Stats are now hidden but still tracked for win streak badge/notifications
             let totalBets = totalWins + totalLosses;
             let currentWinRate = totalBets > 0 ? ((totalWins / totalBets) * 100).toFixed(2) : 0;
-            document.getElementById('totalPredictions').textContent = totalBets || '0';
-            document.getElementById('totalWins').textContent = totalWins || '0';
-            document.getElementById('totalLosses').textContent = totalLosses || '0';
-            document.getElementById('winRate').textContent = `${currentWinRate}%`;
-
+            
             const winStreakBadge = document.getElementById('win-streak-badge');
-            if (winStreak > 1) { // Only show for streak of 2 or more
+            if (winStreak > 1) { // Show badge only for streak > 1
                 winStreakBadge.textContent = `WIN STREAK: ${winStreak}`;
                 winStreakBadge.classList.remove('hidden');
             } else {
@@ -1839,8 +1861,10 @@
             lossStreak = 0;
             totalWins = 0;
             totalLosses = 0;
+            pendingResult = null;
             renderHistory();
             updateRealTimeStats();
+            showNotification('color-mode', 'HISTORY CLEARED');
         }
 
         function showNotification(type, message) {
@@ -1848,7 +1872,9 @@
             notification.className = `notification ${type}`;
             notification.textContent = message;
             document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         function showWinAnimation() {
